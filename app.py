@@ -1,4 +1,7 @@
+import os
 from flask import abort, Flask, jsonify, make_response, request
+from .  import app_class
+import WeConnect
 
 app = Flask(__name__)
 
@@ -35,8 +38,7 @@ def register_user():
 
 @app.route('/api/auth/login', methods=['POST'])
 def login_user():
-    if not request.json or not 'email' in request.json:
-        abort(400)
+    pass
 
 @app.route('/api/auth/logout', methods=['POST'])
 def logout():
