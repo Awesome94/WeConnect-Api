@@ -8,6 +8,10 @@ class WeConnect():
     Manages the other classes"""
 
     def __init__(self):
+        """
+        - userdb: User database.
+        - business: Businesses' database
+        - reviews: Reviews' database"""
         self.userdb = {}
         self.business = {}
         self.reviews = {}
@@ -42,14 +46,15 @@ class WeConnect():
 
         return True
 
-    def create_business(self, name, location, category, user_email):
+    def create_business(self, name, location, category, description, user_email):
+        """Creates a business for the user"""
         if name is None or location is None or category is None:
             return "Missing Field: Please provide Name & Description."
 
         if user_email not in self.userdb:
             return "You cannot create a business. Register or Login"
 
-        business = Business(name, description, user_email)
+        business = Business(name, location, category, description, user_email)
         if user_email in self.business:
             user_business = self.business[user_email]
 
@@ -63,6 +68,7 @@ class WeConnect():
         return business
 
     def update_business(self, id, user_email, name=None, description=None):
+        """Updates an existing business with details provided by the user."""
         if user_email not in self.business:
             return "You haven't created this business."
 
@@ -82,6 +88,8 @@ class WeConnect():
         return False
 
     def get_businesses(self, id, user_email):
+        """Gets all businesses on the application
+        for a logged-in user"""
         if user_email not in self.userdb:
             raise Exception("Not Logged In.")
 
@@ -90,6 +98,7 @@ class WeConnect():
             return all_businesses[id]
 
     def delete_business(self, id, user_email):
+        """Deletes a business created by the user."""
         if user_email not in self.business:
             return "The business you're trying to delete doesn't exist"
 
@@ -100,6 +109,7 @@ class WeConnect():
         return "The business you're trying to delete doesn't exist"
 
     def add_review(self, name, id, user_email, review):
+        """Adds a review for a logged-in user"""
         if user_email not in self.userdb:
             return "User doesn't exist"
 
@@ -108,6 +118,8 @@ class WeConnect():
             self.reviews.update(review, review_business)
 
     def get_reviews(self, name, id, user_email, reviews):
+        """Gets all reviews for a single business and
+        shows them to a logged-in user."""
         if user_email not in self.userdb:
             return "User doesn't exist."
 
@@ -117,6 +129,9 @@ class WeConnect():
             return reviews[review_business]
 
 class User():
+    """Basic blueprint of the User class.
+    Provides the foundation for how the user interacts
+    with the application."""
     def __init__(self, first_name, last_name, email, password):
         self.first_name = first_name
         self.last_name = last_name
@@ -124,34 +139,47 @@ class User():
         self.password = password
 
     def get_email(self):
+        """Returns user email"""
         return self.email
 
     def verify_credentials(self, email, password):
+        """Checks that the user email and password match
+        what is in the user database"""
         if email == self.email and password == self.password:
             return True
 
         return False
 
 class Business():
-    def __init__(self, name, description, user_id):
+    """Basic blueprint of the Business class.
+    Provides the foundation for how the businesses will
+    be modeled in with the application."""
+    def __init__(self, name, description, location, category, user_id):
         self.name = name
+        self.category = category
         self.description = description
+        self.location = location
         self.user_id = user_id
         self.businesses = []
         self.business_reviews = []
 
     def change_name(self, new_name):
+        """Changes business name."""
         self.name = new_name
 
     def change_description(self, new_description):
+        """Changes business description"""
         self.description = new_description
 
     def get_all_reviews(self):
+        """Returns all reviews for a business."""
         return self.business_reviews
 
     def get_all_businesses(self):
+        """Returns all businesses in the business database."""
         return self.businesses
 
     def get_business(self, id):
+        """Returns a specified business."""
         if len(self.businesses) > id:
             return self.businesses[id]
