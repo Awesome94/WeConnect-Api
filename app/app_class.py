@@ -183,3 +183,12 @@ class Business():
         """Returns a specified business."""
         if len(self.businesses) > id:
             return self.businesses[id]
+
+class Review():
+    def __init__(self, review, business_id, user_id):
+        self.review = review
+        self.business_id = business_id
+        self.user_id = user_id
+
+    def set_review(self, review):
+        self.review = review
