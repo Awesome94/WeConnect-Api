@@ -2,6 +2,23 @@ from flask import abort, Flask, jsonify, make_response, request
 
 app = Flask(__name__)
 
+USERS = [
+    {
+        'id': 4,
+        'first_name': 'Joy',
+        'last_name': 'Chips',
+        'email': 'joychips@aol.com',
+        'password': 'someonehere'
+    },
+    {
+        'id': 3,
+        'first_name': 'Mungai',
+        'last_name': 'Otieno',
+        'email': 'omungai@hotmail.com',
+        'password': 'notimetolose'
+    }
+]
+
 BUSINESSES = [
     {
         'id': 1,
@@ -11,6 +28,23 @@ BUSINESSES = [
         'category': 'Hardware'
     }
 ]
+
+@app.route('/api/v1/auth/register', methods=['POST'])
+def register_user():
+    pass
+
+@app.route('/api/auth/login', methods=['POST'])
+def login_user():
+    if not request.json or not 'email' in request.json:
+        abort(400)
+
+@app.route('/api/auth/logout', methods=['POST'])
+def logout():
+    pass
+
+@app.route('/api/auth/reset-password', methods=['POST'])
+def reset_password():
+    pass
 
 @app.route('/api/v1/businesses', methods=['GET'])
 def get_businesses():
