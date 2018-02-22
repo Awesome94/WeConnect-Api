@@ -161,7 +161,6 @@ class Business():
         self.location = location
         self.user_id = user_id
         self.businesses = []
-        self.business_reviews = []
 
     def change_name(self, new_name):
         """Changes business name."""
@@ -170,10 +169,6 @@ class Business():
     def change_description(self, new_description):
         """Changes business description"""
         self.description = new_description
-
-    def get_all_reviews(self):
-        """Returns all reviews for a business."""
-        return self.business_reviews
 
     def get_all_businesses(self):
         """Returns all businesses in the business database."""
@@ -189,6 +184,11 @@ class Review():
         self.review = review
         self.business_id = business_id
         self.user_id = user_id
+        self.business_reviews = []
 
     def set_review(self, review):
         self.review = review
+
+    def get_all_reviews(self):
+        """Returns all reviews for a business."""
+        return self.business_reviews
