@@ -6,14 +6,39 @@ utilizing the other classes defined here."""
 class WeConnect():
     """Overall application class.
     Manages the other classes"""
-
     def __init__(self):
         """
         - userdb: User database.
         - business: Businesses' database
         - reviews: Reviews' database"""
-        self.userdb = {}
-        self.business = {}
+
+        self.userdb = [
+            {
+                'id': '4',
+                'first_name': 'Joy',
+                'last_name': 'Chips',
+                'email': 'joychips@aol.com',
+                'password': 'someonehere'
+            },
+            {
+                'id': '3',
+                'first_name': 'Mungai',
+                'last_name': 'Otieno',
+                'email': 'omungai@hotmail.com',
+                'password': 'notimetolose'
+            }
+        ]
+
+        self.business = [
+            {
+                'id': '1',
+                'email': 'omungai@hotmail.com',
+                'name': 'Karunhanga & Sons Hardware Store',
+                'description': 'We deal in hardware of all kinds',
+                'location': 'Kitojo',
+                'category': 'Hardware'
+           }
+        ]
         self.reviews = {}
 
     def register_user(self, first_name, last_name, email, password, confirm_password):
@@ -46,7 +71,7 @@ class WeConnect():
 
         return True
 
-    def create_business(self, name, location, category, description, user_email):
+    def create_business(self, id, name, location, category, description, user_email):
         """Creates a business for the user"""
         if name is None or location is None or category is None:
             return "Missing Field: Please provide Name & Description."
@@ -55,17 +80,18 @@ class WeConnect():
             return "You cannot create a business. Register or Login"
 
         business = Business(name, location, category, description, user_email)
-        if user_email in self.business:
-            user_business = self.business[user_email]
+        businessdb = self.business
+        user_business = {
+            'id': str(businessdb[-1][id] + 1),
+            'email': business.user_email,
+            'name': business.name,
+            'description': business.location,
+            'location': location,
+            'category': category
+        }
 
-            for biz in user_business:
-                if biz.name.lower() == name.lower():
-                    return "This business already exists. Try updating it or create a new business."
-            user_business.append(business)
-        else:
-            self.business[user_email] = [business]
-
-        return business
+        businessdb.append(user_business)
+        return user_business
 
     def update_business(self, id, user_email, name=None, description=None):
         """Updates an existing business with details provided by the user."""
@@ -73,6 +99,7 @@ class WeConnect():
             return "You haven't created this business."
 
         if id is not None:
+            business = [business for business in self.business if business['id'] == id]
             user_business = self.business[user_email]
             change_business = user_business[id]
 
@@ -87,15 +114,15 @@ class WeConnect():
 
         return False
 
-    def get_businesses(self, id, user_email):
+    def get_businesses(self):
         """Gets all businesses on the application
         for a logged-in user"""
-        if user_email not in self.userdb:
-            raise Exception("Not Logged In.")
+        all_businesses = self.business
+        return all_businesses
 
-        if id is not None:
-            all_businesses = self.business
-            return all_businesses[id]
+    def get_business(self, id):
+        business = [business for business in self.business if business['id'] == id]
+        return business
 
     def delete_business(self, id, user_email):
         """Deletes a business created by the user."""
@@ -154,12 +181,12 @@ class Business():
     """Basic blueprint of the Business class.
     Provides the foundation for how the businesses will
     be modeled in with the application."""
-    def __init__(self, name, description, location, category, user_id):
+    def __init__(self, name, description, location, category, user_email):
         self.name = name
         self.category = category
         self.description = description
         self.location = location
-        self.user_id = user_id
+        self.user_email = user_email
         self.businesses = []
 
     def change_name(self, new_name):
