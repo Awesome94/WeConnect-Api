@@ -44,7 +44,13 @@ def register_business():
     """Registers a business"""
     if not request.json or not 'name' in request.json:
         abort(400)
-    return jsonify({'business': business}), 201
+    name = request.json['name']
+    location = request.json['location']
+    description = request.json['description']
+    category = request.json['category']
+    user_email = request.json['email']
+    new_business = weconnect.create_business(name, location, category, description, user_email)
+    return jsonify({'business': new_business}), 201
 
 """
 @app.route('/api/v1/businesses/<businessId>', methods=['PUT'])
