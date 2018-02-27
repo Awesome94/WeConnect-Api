@@ -34,14 +34,15 @@ def get_businesses():
 @app.route('/api/v1/businesses/<businessId>', methods=['GET'])
 def get_business(businessId):
     """Returns a specific business"""
-    business = weconnect.get_business(businessId)
-    if len(business) == 0:
+    business = weconnect.get_business(str(businessId))
+    if business is None:
         abort(404)
-    return jsonify({'business': business[0]})
+    return jsonify({'business': business})
 
+"""
 @app.route('/api/v1/businesses', methods=['POST'])
 def register_business():
-    """Registers a business"""
+    Registers a business
     if not request.json or not 'name' in request.json:
         abort(400)
     name = request.json['name']
@@ -51,14 +52,13 @@ def register_business():
     user_email = request.json['email']
     new_business = weconnect.create_business(name, location, category, description, user_email)
     return jsonify({'business': new_business}), 201
-
 """
+
 @app.route('/api/v1/businesses/<businessId>', methods=['PUT'])
 def update_business(businessId):
-    Updates a business
-    business = [business for business in BUSINESSES if business['id'] == businessId]
-    if len(business) == 0:
-        abort(404)
+    """Updates a business"""
+    #if len(business) == 0:
+        #abort(404)
     if not request.json:
         abort(400)
     if 'name' in request.json and isinstance((request.json['name']), str):
@@ -69,11 +69,13 @@ def update_business(businessId):
         abort(400)
     if 'category' in request.json and isinstance((request.json['category']), str):
         abort(400)
+
+    """
     business[0]['name'] = request.json.get('name', business[0]['name'])
     business[0]['description'] = request.json.get('description', business[0]['description'])
     business[0]['location'] = request.json.get('location', business[0]['location'])
-    business[0]['category'] = request.json.get('category', business[0]['category'])
-"""
+    business[0]['category'] = request.json.get('category', business[0]['category'])"""
+
 """
 @app.route('/api/v1//businesses/<businessId>', methods=['DELETE'])
 def delete_business(businessId):
