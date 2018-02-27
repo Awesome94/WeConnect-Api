@@ -3,7 +3,7 @@ Holds the API for the UI contained within [WeConnect](https://github.com/leni1/W
 
 ## API should have the following endpoints
 Endpoint | Functionality
-------------------------
+-------- | -------------
 POST /api/auth/register | Creates a user account
 POST /api/auth/login | Logs in a user
 POST /api/auth/logout | Logs out a user
