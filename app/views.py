@@ -84,10 +84,28 @@ def delete_business(businessId):
         abort(404)
    # if not request.json:
        # abort(400)
-
     delete_business = weconnect.delete_business(int(businessId))
     if delete_business:
         return jsonify({'message': 'Business deleted'})
+
+@app.route('/api/businesses/<businessId>/reviews', methods=['POST'])
+def set_review(businessId):
+    """Adds a review to a business"""
+    if not request.json or not 'review' in request.json:
+        abort(400)
+    review = request.json['review']
+    business_id = int(businessId)
+    new_review = weconnect.add_review(business_id, random.randint(1, 500), review)
+    if new_review is None:
+        abort(404)
+    return jsonify({'review': new_review}), 201
+
+@app.route('/api/businesses/<businessId>/reviews', methods=['GET'])
+def get_reviews(businessId):
+    """Returns reviews for the specified business"""
+    business_id = int(businessId)
+    reviews = weconnect.get_reviews(business_id)
+    return jsonify(reviews)
 
 @app.errorhandler(404)
 def not_found(error):
