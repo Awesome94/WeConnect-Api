@@ -13,7 +13,7 @@ POST /api/businesses/<businessId> | Updates a business profile
 DELETE /api//businesses/<businessId> | Remove a business
 GET /api/businesses | Retrieves all businesses
 GET /api/businesses/<businessId> | Get a business
-POST /api/businesses/<businessId> | Add a review for a business
+POST /api/businesses/<businessId>/reviews | Add a review for a business
 GET /api/businesses/<businessId>/reviews | Get all reviews for a business
 
 
