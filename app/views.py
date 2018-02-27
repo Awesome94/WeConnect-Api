@@ -1,4 +1,4 @@
-import os
+import os, random
 from app import app
 from flask import abort, Flask, jsonify, make_response, request
 from .app_class import WeConnect
@@ -34,10 +34,10 @@ def get_businesses():
 @app.route('/api/v1/businesses/<businessId>', methods=['GET'])
 def get_business(businessId):
     """Returns a specific business"""
-    business = weconnect.get_business(businessId)
-    if len(business) == 0:
+    business = weconnect.get_business(int(businessId))
+    if business is None:
         abort(404)
-    return jsonify({'business': business[0]})
+    return jsonify({'business': business})
 
 @app.route('/api/v1/businesses', methods=['POST'])
 def register_business():
@@ -48,42 +48,47 @@ def register_business():
     location = request.json['location']
     description = request.json['description']
     category = request.json['category']
-    user_email = request.json['email']
-    new_business = weconnect.create_business(name, location, category, description, user_email)
+    new_business = weconnect.create_business(random.randint(1, 500), name, location, category, description)
     return jsonify({'business': new_business}), 201
 
-"""
+
 @app.route('/api/v1/businesses/<businessId>', methods=['PUT'])
 def update_business(businessId):
-    Updates a business
-    business = [business for business in BUSINESSES if business['id'] == businessId]
-    if len(business) == 0:
+    """Updates a business"""
+    if int(businessId) == 0:
         abort(404)
     if not request.json:
         abort(400)
-    if 'name' in request.json and isinstance((request.json['name']), str):
+    if 'name' in request.json and isinstance((request.json['name']), str)  == False:
         abort(400)
-    if 'description' in request.json and isinstance((request.json['description']), str):
+    if 'description' in request.json and isinstance((request.json['description']), str) == False:
         abort(400)
-    if 'location' in request.json and isinstance((request.json['location']), str):
+    if 'location' in request.json and isinstance((request.json['location']), str) == False:
         abort(400)
-    if 'category' in request.json and isinstance((request.json['category']), str):
+    if 'category' in request.json and isinstance((request.json['category']), str) == False:
         abort(400)
-    business[0]['name'] = request.json.get('name', business[0]['name'])
-    business[0]['description'] = request.json.get('description', business[0]['description'])
-    business[0]['location'] = request.json.get('location', business[0]['location'])
-    business[0]['category'] = request.json.get('category', business[0]['category'])
-"""
-"""
+
+    name = request.json['name']
+    description = request.json['description']
+    location = request.json['location']
+    category = request.json['category']
+
+    if name is not None or description is not None or location is not None or category is not None:
+        business = weconnect.update_business(int(businessId), name, location, description, category)
+        return jsonify(business)
+
 @app.route('/api/v1//businesses/<businessId>', methods=['DELETE'])
 def delete_business(businessId):
-    Deletes a business
-    business = [business for business in BUSINESSES if business['id'] == businessId]
-    if len(business) == 0:
+    """Deletes a business"""
+    if int(businessId) == 0:
         abort(404)
-    BUSINESSES.remove(business[0])
-    return jsonify({'result': True})
-"""
+   # if not request.json:
+       # abort(400)
+
+    delete_business = weconnect.delete_business(int(businessId))
+    if delete_business:
+        return jsonify({'message': 'Business deleted'})
+
 @app.errorhandler(404)
 def not_found(error):
     """This is the error handler"""

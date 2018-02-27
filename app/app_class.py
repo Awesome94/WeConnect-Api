@@ -31,14 +31,21 @@ class WeConnect():
 
         self.business = [
             {
-                'id': '1',
-                'email': 'omungai@hotmail.com',
+                'id': 1,
+                'name': 'Joy Salon',
+                'description': 'Unisex Hairdresses',
+                'location': 'Wakiso',
+                'category': 'Hair'
+            },
+            {
+                'id': 2,
                 'name': 'Karunhanga & Sons Hardware Store',
                 'description': 'We deal in hardware of all kinds',
                 'location': 'Kitojo',
                 'category': 'Hardware'
-           }
+            }
         ]
+
         self.reviews = {}
 
     def register_user(self, first_name, last_name, email, password, confirm_password):
@@ -71,69 +78,76 @@ class WeConnect():
 
         return True
 
-    def create_business(self, id, name, location, category, description, user_email):
+    def create_business(self, id, name, location, category, description):
         """Creates a business for the user"""
-        if name is None or location is None or category is None:
+        if name is None or location is None or category is None or description is None:
             return "Missing Field: Please provide Name & Description."
 
-        if user_email not in self.userdb:
-            return "You cannot create a business. Register or Login"
-
-        business = Business(name, location, category, description, user_email)
-        businessdb = self.business
+        business = Business(id, name, location, description, category)
         user_business = {
-            'id': str(businessdb[-1][id] + 1),
-            'email': business.user_email,
+            'id': business.id,
             'name': business.name,
-            'description': business.location,
-            'location': location,
-            'category': category
+            'location': business.location,
+            'description': business.description,
+            'category': business.category
         }
 
-        businessdb.append(user_business)
+        self.business.append(user_business)
         return user_business
 
-    def update_business(self, id, user_email, name=None, description=None):
-        """Updates an existing business with details provided by the user."""
-        if user_email not in self.business:
-            return "You haven't created this business."
-
-        if id is not None:
-            business = [business for business in self.business if business['id'] == id]
-            user_business = self.business[user_email]
-            change_business = user_business[id]
-
-            if name is not None:
-                change_business.set_name(name)
-
-            if description is not None:
-                change_business.set_description(description)
-
-            self.business[user_email][id] = change_business
-            return True
-
-        return False
-
     def get_businesses(self):
-        """Gets all businesses on the application
-        for a logged-in user"""
-        all_businesses = self.business
-        return all_businesses
+            """Gets all businesses on the application
+            for a logged-in user"""
+            all_businesses = self.business
+            return all_businesses
+
+
+    def update_business(self, id, name=None, location=None, description=None, category=None):
+        """Updates an existing business with details provided by the user."""
+        if id is not None:
+            for my_business in self.business:
+                for key in my_business.keys():
+                    if key == 'id' and my_business[key] == id:
+                        old_name = my_business['name']
+                        old_description = my_business['description']
+                        old_location = my_business['location']
+                        old_category = my_business['category']
+                        business = Business(id, old_name, old_description, old_location, old_category)
+
+                        if old_name is not None:
+                            new_name = business.change_name(name)
+                            my_business['name'] = new_name
+
+                        if old_location is not None:
+                            new_location = business.change_location(location)
+                            my_business['location'] = new_location
+
+                        if old_description is not None:
+                            new_description = business.change_description(description)
+                            my_business['description'] = new_description
+
+                        if old_category is not None:
+                            new_category = business.change_category(category)
+                            my_business['category'] = new_category
+
+                        return my_business
 
     def get_business(self, id):
-        business = [business for business in self.business if business['id'] == id]
-        return business
+        for business in self.business:
+            for key in business.keys():
+                if key == 'id' and business[key] == id:
+                    return business
 
-    def delete_business(self, id, user_email):
+    def delete_business(self, id):
         """Deletes a business created by the user."""
-        if user_email not in self.business:
-            return "The business you're trying to delete doesn't exist"
+        if id is not None:
+            for my_business in self.business:
+                for key, value in my_business.items():
+                    if key == 'id' and value == id:
+                        business = self.business
+                        business.remove(my_business)
+                        return True
 
-        if len(self.business[user_email]) > id:
-            self.business[user_email].pop(id)
-            return True
-
-        return "The business you're trying to delete doesn't exist"
 
     def add_review(self, name, id, user_email, review):
         """Adds a review for a logged-in user"""
@@ -181,30 +195,32 @@ class Business():
     """Basic blueprint of the Business class.
     Provides the foundation for how the businesses will
     be modeled in with the application."""
-    def __init__(self, name, description, location, category, user_email):
+    def __init__(self, id, name, location, description, category):
+        self.id = id
         self.name = name
-        self.category = category
-        self.description = description
         self.location = location
-        self.user_email = user_email
-        self.businesses = []
+        self.description = description
+        self.category = category
 
     def change_name(self, new_name):
         """Changes business name."""
         self.name = new_name
+        return new_name
 
     def change_description(self, new_description):
         """Changes business description"""
         self.description = new_description
+        return new_description
 
-    def get_all_businesses(self):
-        """Returns all businesses in the business database."""
-        return self.businesses
+    def change_location(self, new_location):
+        """Changes business name."""
+        self.name = new_location
+        return new_location
 
-    def get_business(self, id):
-        """Returns a specified business."""
-        if len(self.businesses) > id:
-            return self.businesses[id]
+    def change_category(self, new_category):
+        """Changes business description"""
+        self.category = new_category
+        return new_category
 
 class Review():
     def __init__(self, review, business_id, user_id):
