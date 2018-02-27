@@ -31,14 +31,23 @@ class WeConnect():
 
         self.business = [
             {
-                'id': '1',
+                'id': 1,
+                'email': 'joychips@aol.com',
+                'name': 'Joy Salon',
+                'description': 'Unisex Hairdresses',
+                'location': 'Wakiso',
+                'category': 'Hair'
+            },
+            {
+                'id': 2,
                 'email': 'omungai@hotmail.com',
                 'name': 'Karunhanga & Sons Hardware Store',
                 'description': 'We deal in hardware of all kinds',
                 'location': 'Kitojo',
                 'category': 'Hardware'
-           }
+            }
         ]
+
         self.reviews = {}
 
     def register_user(self, first_name, last_name, email, password, confirm_password):
@@ -71,7 +80,7 @@ class WeConnect():
 
         return True
 
-    def create_business(self, id, name, location, category, description, user_email):
+    def create_business(self, name, location, category, description, user_email, id=None):
         """Creates a business for the user"""
         if name is None or location is None or category is None:
             return "Missing Field: Please provide Name & Description."
@@ -93,23 +102,26 @@ class WeConnect():
         businessdb.append(user_business)
         return user_business
 
-    def update_business(self, id, user_email, name=None, description=None):
+    def update_business(self, id, name=None, description=None, location=None, category=None):
         """Updates an existing business with details provided by the user."""
-        if user_email not in self.business:
-            return "You haven't created this business."
-
         if id is not None:
-            business = [business for business in self.business if business['id'] == id]
-            user_business = self.business[user_email]
-            change_business = user_business[id]
+            my_business = [item for item in self.business if item['id'] == id]
+            name = my_business['name']
+            description = my_business['description']
+            location = my_business['location']
+            category = my_business['category']
+            user_email = my_business['email']
+            business = Business(name, description, location, category, user_email)
 
-            if name is not None:
-                change_business.set_name(name)
+            if my_business['name'] is not None:
+                business.change_name()
 
-            if description is not None:
-                change_business.set_description(description)
+            if my_business['description'] is not None:
+                pass
 
-            self.business[user_email][id] = change_business
+            if my_business['location'] is not None:
+                pass
+
             return True
 
         return False
@@ -121,8 +133,10 @@ class WeConnect():
         return all_businesses
 
     def get_business(self, id):
-        business = [business for business in self.business if business['id'] == id]
-        return business
+        for business in self.business:
+            for key in business.keys():
+                if key == 'id' and business[key] == id:
+                    return business
 
     def delete_business(self, id, user_email):
         """Deletes a business created by the user."""
@@ -196,15 +210,6 @@ class Business():
     def change_description(self, new_description):
         """Changes business description"""
         self.description = new_description
-
-    def get_all_businesses(self):
-        """Returns all businesses in the business database."""
-        return self.businesses
-
-    def get_business(self, id):
-        """Returns a specified business."""
-        if len(self.businesses) > id:
-            return self.businesses[id]
 
 class Review():
     def __init__(self, review, business_id, user_id):
