@@ -43,10 +43,26 @@ class WeConnect():
                 'description': 'We deal in hardware of all kinds',
                 'location': 'Kitojo',
                 'category': 'Hardware'
+            },
+            {
+                'id': 3,
+                'name': 'Psalms Grocery',
+                'description': 'We deal in hardware of all kinds',
+                'location': 'Kisaasi',
+                'category': 'Hardware'
             }
         ]
 
-        self.reviews = {}
+        self.reviews = {
+            1: {
+                1: 'great business',
+                2: 'my head got burnt!'
+            },
+            2: {
+                1: 'Great hardware at a cheap price',
+                2: 'quality of hardware could improve'
+            }
+        }
 
     def register_user(self, first_name, last_name, email, password, confirm_password):
         """Adds a user to the application
@@ -149,25 +165,28 @@ class WeConnect():
                         return True
 
 
-    def add_review(self, name, id, user_email, review):
-        """Adds a review for a logged-in user"""
-        if user_email not in self.userdb:
-            return "User doesn't exist"
+    def add_review(self, business_id, id, user_review):
+        """Adds a review by a user"""
+        if business_id is not None:
+            for business in self.business:
+                for key, value in business.items():
+                    if key == 'id' and value == business_id:
+                        review = Review(id, user_review)
+                        new_review = {
+                                'id': review.review_id,
+                                'review': review.review
+                            }
 
-        if id is not None and name in self.business:
-            review_business = self.business[id]
-            self.reviews.update(review, review_business)
+                        self.reviews.update({business_id: new_review})
+                        return {business_id: new_review}
 
-    def get_reviews(self, name, id, user_email, reviews):
+    def get_reviews(self, business_id):
         """Gets all reviews for a single business and
         shows them to a logged-in user."""
-        if user_email not in self.userdb:
-            return "User doesn't exist."
-
-        if id is not None and name in self.business:
-            review_business = self.business[id]
-            reviews = self.reviews
-            return reviews[review_business]
+        if business_id is not None:
+            for biz_id in self.reviews:
+                if business_id == biz_id:
+                    return self.reviews[biz_id]
 
 class User():
     """Basic blueprint of the User class.
@@ -223,15 +242,6 @@ class Business():
         return new_category
 
 class Review():
-    def __init__(self, review, business_id, user_id):
+    def __init__(self, review_id, review):
         self.review = review
-        self.business_id = business_id
-        self.user_id = user_id
-        self.business_reviews = []
-
-    def set_review(self, review):
-        self.review = review
-
-    def get_all_reviews(self):
-        """Returns all reviews for a business."""
-        return self.business_reviews
+        self.review_id = review_id
