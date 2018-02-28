@@ -3,68 +3,37 @@ The WeConnect class acts as the main class, handling
 the interactions of the user with the application by
 utilizing the other classes defined here."""
 
+
 class WeConnect():
     """Overall application class.
     Manages the other classes"""
+
     def __init__(self):
         """
         - userdb: User database.
         - business: Businesses' database
         - reviews: Reviews' database"""
 
-        self.userdb = [
-            {
-                'id': '4',
-                'first_name': 'Joy',
-                'last_name': 'Chips',
-                'email': 'joychips@aol.com',
-                'password': 'someonehere'
-            },
-            {
-                'id': '3',
-                'first_name': 'Mungai',
-                'last_name': 'Otieno',
-                'email': 'omungai@hotmail.com',
-                'password': 'notimetolose'
-            }
-        ]
+        self.userdb = [{
+            'id': '4',
+            'first_name': 'Joy',
+            'last_name': 'Chips',
+            'email': 'joychips@aol.com',
+            'password': 'someonehere'
+        }, {
+            'id': '3',
+            'first_name': 'Mungai',
+            'last_name': 'Otieno',
+            'email': 'omungai@hotmail.com',
+            'password': 'notimetolose'
+        }]
 
-        self.business = [
-            {
-                'id': 1,
-                'name': 'Joy Salon',
-                'description': 'Unisex Hairdresses',
-                'location': 'Wakiso',
-                'category': 'Hair'
-            },
-            {
-                'id': 2,
-                'name': 'Karunhanga & Sons Hardware Store',
-                'description': 'We deal in hardware of all kinds',
-                'location': 'Kitojo',
-                'category': 'Hardware'
-            },
-            {
-                'id': 3,
-                'name': 'Psalms Grocery',
-                'description': 'We deal in hardware of all kinds',
-                'location': 'Kisaasi',
-                'category': 'Hardware'
-            }
-        ]
+        self.business = []
 
-        self.reviews = {
-            1: {
-                1: 'great business',
-                2: 'my head got burnt!'
-            },
-            2: {
-                1: 'Great hardware at a cheap price',
-                2: 'quality of hardware could improve'
-            }
-        }
+        self.reviews = {}
 
-    def register_user(self, first_name, last_name, email, password, confirm_password):
+    def register_user(self, first_name, last_name, email, password,
+                      confirm_password):
         """Adds a user to the application
         - first_name: Holds the user's first name
         - last_name: Holds the user's last name
@@ -105,20 +74,35 @@ class WeConnect():
             'name': business.name,
             'location': business.location,
             'description': business.description,
-            'category': business.category
+            'category': business.category,
+            'reviews': []
         }
 
         self.business.append(user_business)
         return user_business
 
     def get_businesses(self):
-            """Gets all businesses on the application
-            for a logged-in user"""
-            all_businesses = self.business
-            return all_businesses
+        """Gets all businesses on the application
+        for a logged-in user"""
+        print(self.business)
+        print("-----------------")
+        all_businesses = []
+        print(all_businesses)
+        for item in self.business:
+            item1 = item.copy()
+            item1.pop('reviews', None)
+            all_businesses.append(item1)
+        print("-----------------")
+        print(self.business)
+        print("--------------------")
+        return all_businesses
 
-
-    def update_business(self, id, name=None, location=None, description=None, category=None):
+    def update_business(self,
+                        id,
+                        name=None,
+                        location=None,
+                        description=None,
+                        category=None):
         """Updates an existing business with details provided by the user."""
         if id is not None:
             for my_business in self.business:
@@ -128,7 +112,8 @@ class WeConnect():
                         old_description = my_business['description']
                         old_location = my_business['location']
                         old_category = my_business['category']
-                        business = Business(id, old_name, old_description, old_location, old_category)
+                        business = Business(id, old_name, old_description,
+                                            old_location, old_category)
 
                         if old_name is not None:
                             new_name = business.change_name(name)
@@ -139,7 +124,8 @@ class WeConnect():
                             my_business['location'] = new_location
 
                         if old_description is not None:
-                            new_description = business.change_description(description)
+                            new_description = business.change_description(
+                                description)
                             my_business['description'] = new_description
 
                         if old_category is not None:
@@ -164,7 +150,6 @@ class WeConnect():
                         business.remove(my_business)
                         return True
 
-
     def add_review(self, business_id, id, user_review):
         """Adds a review by a user"""
         if business_id is not None:
@@ -173,12 +158,13 @@ class WeConnect():
                     if key == 'id' and value == business_id:
                         review = Review(id, user_review)
                         new_review = {
-                                'id': review.review_id,
-                                'review': review.review
-                            }
+                            'id': review.review_id,
+                            'review': review.review
+                        }
+                        business['reviews'].append(new_review)
 
                         self.reviews.update({business_id: new_review})
-                        return {business_id: new_review}
+                        return business
 
     def get_reviews(self, business_id):
         """Gets all reviews for a single business and
@@ -188,10 +174,12 @@ class WeConnect():
                 if business_id == biz_id:
                     return self.reviews[biz_id]
 
+
 class User():
     """Basic blueprint of the User class.
     Provides the foundation for how the user interacts
     with the application."""
+
     def __init__(self, first_name, last_name, email, password):
         self.first_name = first_name
         self.last_name = last_name
@@ -210,10 +198,12 @@ class User():
 
         return False
 
+
 class Business():
     """Basic blueprint of the Business class.
     Provides the foundation for how the businesses will
     be modeled in with the application."""
+
     def __init__(self, id, name, location, description, category):
         self.id = id
         self.name = name
@@ -240,6 +230,7 @@ class Business():
         """Changes business description"""
         self.category = new_category
         return new_category
+
 
 class Review():
     def __init__(self, review_id, review):
