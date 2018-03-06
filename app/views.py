@@ -6,20 +6,31 @@ from .app_class import WeConnect
 
 weconnect = WeConnect()
 
-
-@app.route('/', methods=['GET'])
-def test():
-    return "Something"
-
-
 @app.route('/api/v1/auth/register', methods=['POST'])
 def register_user():
-    pass
+    if not request.json or 'email' not in request.json:
+        abort(400)
+    data = request.get_json()
+    email = data['email']
+    first_name = data['first_name']
+    last_name = data['email']
+    password = data['password']
+    new_user = weconnect.register_user(random.randint(1, 500),
+                                      first_name, last_name, email, password)
+    if new_user:
+        return jsonify({'message': 'Successfully created user'}), 200
 
-
-@app.route('/api/auth/login', methods=['POST'])
+@app.route('/api/v1/auth/login', methods=['POST'])
 def login_user():
-    pass
+    if not request.json or 'email' not in request.json:
+        abort(400)
+    data = request.get_json()
+    email = data['email']
+    password = data['password']
+    user = weconnect.login_user(email, password)
+    if user:
+        #Generate a token
+        return jsonify({'message': 'Successfully logged in'}), 200
 
 
 @app.route('/api/auth/logout', methods=['POST'])
@@ -27,10 +38,17 @@ def logout():
     pass
 
 
-@app.route('/api/auth/reset-password', methods=['POST'])
+@app.route('/api/v1/auth/reset-password', methods=['POST'])
 def reset_password():
-    pass
-
+    if not request.json or 'email' not in request.json:
+        abort(400)
+    data = request.get_json()
+    email = data['email']
+    password = data['password']
+    new_password = data['new_password']
+    user = weconnect.reset_password(email, password, new_password)
+    if user:
+        return jsonify({'message': 'Successfully updated password'}), 200
 
 @app.route('/api/v1/businesses', methods=['GET'])
 def get_businesses():
@@ -57,10 +75,14 @@ def register_business():
     location = request.json['location']
     description = request.json['description']
     category = request.json['category']
-    new_business = weconnect.create_business(
-        random.randint(1, 500), name, location, category, description)
-    return jsonify({'business': new_business}), 201
-
+    emptyString = ""
+    if name is not None or description is not None or location is not None or category is not None:
+        if name != emptyString or description != emptyString or location != emptyString or category != emptyString:
+            new_business = weconnect.create_business(
+                random.randint(1, 500), name, location, category, description)
+            return jsonify({'business': new_business}), 201
+        return jsonify({"response": "Empty value entered"})
+    return abort(400)
 
 @app.route('/api/v1/businesses/<businessId>', methods=['PUT'])
 def update_business(businessId):
@@ -91,7 +113,6 @@ def update_business(businessId):
         business = weconnect.update_business(
             int(businessId), name, location, description, category)
         return jsonify(business)
-
 
 @app.route('/api/v1/businesses/<businessId>', methods=['DELETE'])
 def delete_business(businessId):
@@ -124,10 +145,9 @@ def set_review(businessId):
 @app.route('/api/v1/businesses/<businessId>/reviews', methods=['GET'])
 def get_reviews(businessId):
     """Returns reviews for the specified business"""
-    business_id = int(businessId)
-    reviews = weconnect.get_reviews(business_id)
-    return jsonify(reviews)
-
+    reviews = weconnect.get_reviews(int(businessId))
+    print(reviews)
+    return jsonify({'business': reviews})
 
 @app.errorhandler(404)
 def not_found(error):
