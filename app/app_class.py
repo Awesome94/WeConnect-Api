@@ -64,6 +64,19 @@ class WeConnect():
                 return user
         return False
 
+    def reset_password(self, email, password, new_password):
+        """Changes the user's password
+        - email: Holds the user's entered e-mail address.
+        - password: Holds the user's entered password."""
+        for user_record in self.userdb:
+            if user_record['email'] == email and user_record['password'] == password:
+                old_password = user_record['password']
+
+                if old_password:
+                    user_record['password'] = new_password
+                    return user_record['password']
+        return False
+
     def create_business(self, business_id, name, location, category, description):
         """Creates a business for the user"""
         if name is None or location is None or category is None or description is None:
@@ -154,7 +167,7 @@ class WeConnect():
         if business_id is not None:
             for business in self.business:
                 for key, value in business.items():
-                    if key == 'id' and value == int(business_id):
+                    if key == 'id' and value == business_id:
                         review = Review(review_id, user_review)
                         new_review = {
                             'id': review.review_id,
