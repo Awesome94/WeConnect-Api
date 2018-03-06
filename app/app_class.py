@@ -11,8 +11,7 @@ class WeConnect():
     def __init__(self):
         """
         - userdb: User database.
-        - business: Businesses' database
-        - reviews: Reviews' database"""
+        - business: Businesses' database"""
 
         self.userdb = [{
             'id': '4',
@@ -30,47 +29,49 @@ class WeConnect():
 
         self.business = []
 
-        self.reviews = {}
-
-    def register_user(self, first_name, last_name, email, password,
-                      confirm_password):
+    def register_user(self, user_id, first_name, last_name, email, password):
         """Adds a user to the application
+        - user_id: uniquely identifies the user record
         - first_name: Holds the user's first name
         - last_name: Holds the user's last name
-        - password: Holds the user's password
-        - confirm_password: Holds the second entry of the password
-        by the user."""
-        if email in self.userdb:
-            return "You're already registered. Try signing in."
-        else:
-            if password != confirm_password:
-                return "Sorry, the two passwords don't match. Try again. "
-            elif email is not None and password is not None:
-                user = User(first_name, last_name, email, password)
-                self.userdb[email] = user
-                return user
+        - password: Holds the user's password"""
+        for user_record in self.userdb:
+            if user_record['email'] == email and user_record['id'] is not None:
+                return "You're already registered. Try signing in."
+
+            if email is not None and password is not None:
+                user = User(user_id, first_name, last_name, email, password)
+                new_user = {
+                    'id': user.user_id,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
+                    'email': user.email,
+                    'password': user.password
+                }
+                self.userdb.append(new_user)
+                return new_user
 
     def login_user(self, email, password):
         """Logs in users to the application.
         - email: Holds the user's entered e-mail address.
         - password: Holds the user's entered password"""
-        if email not in self.userdb:
-            return "You don't have an account. Please register."
-        user = self.userdb[email]
+        for user_record in self.userdb:
+            if user_record['email'] == email and user_record['password'] == password:
+                user = {
+                    'user_id': user_record['id'],
+                    'user_email': user_record['email']
+                }
+                return user
+        return False
 
-        if user.verify_credentials(email, password) is False:
-            return "Wrong e-mail and/or password."
-
-        return True
-
-    def create_business(self, id, name, location, category, description):
+    def create_business(self, business_id, name, location, category, description):
         """Creates a business for the user"""
         if name is None or location is None or category is None or description is None:
             return "Missing Field: Please provide Name & Description."
 
-        business = Business(id, name, location, description, category)
+        business = Business(business_id, name, location, description, category)
         user_business = {
-            'id': business.id,
+            'id': business.business_id,
             'name': business.name,
             'location': business.location,
             'description': business.description,
@@ -84,35 +85,29 @@ class WeConnect():
     def get_businesses(self):
         """Gets all businesses on the application
         for a logged-in user"""
-        print(self.business)
-        print("-----------------")
         all_businesses = []
-        print(all_businesses)
         for item in self.business:
             item1 = item.copy()
             item1.pop('reviews', None)
             all_businesses.append(item1)
-        print("-----------------")
-        print(self.business)
-        print("--------------------")
         return all_businesses
 
     def update_business(self,
-                        id,
+                        business_id,
                         name=None,
                         location=None,
                         description=None,
                         category=None):
         """Updates an existing business with details provided by the user."""
-        if id is not None:
+        if business_id is not None:
             for my_business in self.business:
                 for key in my_business.keys():
-                    if key == 'id' and my_business[key] == id:
+                    if key == 'id' and my_business[key] == business_id:
                         old_name = my_business['name']
                         old_description = my_business['description']
                         old_location = my_business['location']
                         old_category = my_business['category']
-                        business = Business(id, old_name, old_description,
+                        business = Business(business_id, old_name, old_description,
                                             old_location, old_category)
 
                         if old_name is not None:
@@ -134,45 +129,47 @@ class WeConnect():
 
                         return my_business
 
-    def get_business(self, id):
-        for business in self.business:
-            for key in business.keys():
-                if key == 'id' and business[key] == id:
-                    return business
+    def get_business(self, business_id):
+        all_businesses = []
+        for item in self.business:
+            item1 = item.copy()
+            item1.pop('reviews', None)
+            all_businesses.append(item1)
 
-    def delete_business(self, id):
+            for business in all_businesses:
+                for key in business.keys():
+                    if key == 'id' and business[key] == business_id:
+                        return business
+
+    def delete_business(self, business_id):
         """Deletes a business created by the user."""
-        if id is not None:
+        if business_id is not None:
             for my_business in self.business:
-                for key, value in my_business.items():
-                    if key == 'id' and value == id:
-                        business = self.business
-                        business.remove(my_business)
-                        return True
+                if my_business['id'] == business_id:
+                    self.business.remove(my_business)
+                    return True
 
-    def add_review(self, business_id, id, user_review):
+    def add_review(self, business_id, review_id, user_review):
         """Adds a review by a user"""
         if business_id is not None:
             for business in self.business:
                 for key, value in business.items():
-                    if key == 'id' and value == business_id:
-                        review = Review(id, user_review)
+                    if key == 'id' and value == int(business_id):
+                        review = Review(review_id, user_review)
                         new_review = {
                             'id': review.review_id,
                             'review': review.review
                         }
                         business['reviews'].append(new_review)
-
-                        self.reviews.update({business_id: new_review})
                         return business
 
     def get_reviews(self, business_id):
         """Gets all reviews for a single business and
         shows them to a logged-in user."""
         if business_id is not None:
-            for biz_id in self.reviews:
-                if business_id == biz_id:
-                    return self.reviews[biz_id]
+            for business in self.business:
+                for business_id in business:
+                    return business['reviews']
 
 
 class User():
@@ -180,32 +177,20 @@ class User():
     Provides the foundation for how the user interacts
     with the application."""
 
-    def __init__(self, first_name, last_name, email, password):
+    def __init__(self, user_id, first_name, last_name, email, password):
+        self.user_id = user_id
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
         self.password = password
-
-    def get_email(self):
-        """Returns user email"""
-        return self.email
-
-    def verify_credentials(self, email, password):
-        """Checks that the user email and password match
-        what is in the user database"""
-        if email == self.email and password == self.password:
-            return True
-
-        return False
-
 
 class Business():
     """Basic blueprint of the Business class.
     Provides the foundation for how the businesses will
     be modeled in with the application."""
 
-    def __init__(self, id, name, location, description, category):
-        self.id = id
+    def __init__(self, business_id, name, location, description, category):
+        self.business_id = business_id
         self.name = name
         self.location = location
         self.description = description
