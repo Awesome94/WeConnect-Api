@@ -1,4 +1,6 @@
 # WeConnect-Api
+https://travis-ci.org/leni1/WeConnect-Api.svg?branch=master
+
 Holds the API for the UI contained within [WeConnect](https://github.com/leni1/WeConnect)
 
 ## API should have the following endpoints
