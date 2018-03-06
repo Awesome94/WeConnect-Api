@@ -1,5 +1,5 @@
 # WeConnect-Api
-https://travis-ci.org/leni1/WeConnect-Api.svg?branch=master
+[![Build Status](https://travis-ci.org/leni1/WeConnect-Api.svg?branch=master](https://travis-ci.org/leni1/WeConnect-Api.svg?branch=master)s
 
 Holds the API for the UI contained within [WeConnect](https://github.com/leni1/WeConnect)
 
