@@ -2,7 +2,10 @@ import os
 import random
 from app import app
 from flask import abort, Flask, jsonify, make_response, request
+from flask_jwt_extended import (JWTManager, jwt_required, create_access_token, get_jwt_identity)
 from .app_class import WeConnect
+
+app.config['JWT_SECRET_KEY'] = os.urandom(23)
 
 weconnect = WeConnect()
 
@@ -15,6 +18,8 @@ def register_user():
     first_name = data['first_name']
     last_name = data['email']
     password = data['password']
+    if email is None:
+        abort(400)
     new_user = weconnect.register_user(random.randint(1, 500),
                                       first_name, last_name, email, password)
     if new_user:
@@ -29,8 +34,8 @@ def login_user():
     password = data['password']
     user = weconnect.login_user(email, password)
     if user:
-        #Generate a token
-        return jsonify({'message': 'Successfully logged in'}), 200
+        access_token = create_access_token(identity=user)
+        return jsonify(access_token=access_token), 200
 
 
 @app.route('/api/auth/logout', methods=['POST'])
@@ -39,6 +44,7 @@ def logout():
 
 
 @app.route('/api/v1/auth/reset-password', methods=['POST'])
+@jwt_required
 def reset_password():
     if not request.json or 'email' not in request.json:
         abort(400)
