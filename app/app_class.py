@@ -51,24 +51,25 @@ class WeConnect():
                     'password': user_password
                 }
                 self.userdb.append(new_user)
-                return new_user
+                return True
 
     def login_user(self, email, password):
         """Logs in users to the application.
         - email: Holds the user's entered e-mail address.
-        - password: Holds the user's entered password"""
+        - password: Holds the user's entered password
+        - user_record: a 'record' of the user stored in dict format
+        - self.userdb: a list of dictionaries, each symbolized by user_record"""
         for user_record in self.userdb:
-            salt = bcrypt.gensalt(16)
-            entered_password = bcrypt.hashpw(password, salt)
+            user_id = user_record['id']
             user_password = user_record['password']
             user_email = user_record['email']
-            if user_email == email and user_password == entered_password:
-                user = {
-                    'user_id': user_record['id'],
-                    'user_email': user_email
-                }
-                return user
-        return False
+            first_name = user_record['first_name']
+            last_name = user_record['last_name']
+            user = User(user_id, first_name, last_name, user_email, user_password)
+            if user.user_id:
+                if user.email == email:
+                    if user.check_password(password, user_password):
+                        return True
 
     def reset_password(self, email, password, new_password):
         """Changes the user's password
@@ -210,16 +211,12 @@ class User():
 
     def set_password(self, password):
         salt = bcrypt.gensalt(16)
-        hashed_password = bcrypt.hashpw(self.password, salt)
-        return hashed_password
+        password = self.password
+        hashed_password = bcrypt.hashpw(password.encode('utf8'), salt)
+        return hashed_password.decode('utf8')
 
-    def check_password(self, password):
-        salt = bcrypt.gensalt(16)
-        hashed_password = bcrypt.hashpw(self.password, salt)
-        if hashed_password == bcrypt.hashpw(self.password, hashed_password):
-            return True
-        return False
-
+    def check_password(self, password, hashed_password):
+        return bcrypt.checkpw(password.encode('utf8'), hashed_password.encode('utf8'))
 
 class Business():
     """Basic blueprint of the Business class.
