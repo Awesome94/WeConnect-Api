@@ -18,13 +18,13 @@ class WeConnectViews(unittest.TestCase):
                                                                email='harry@aol.com', password='dumbledore')))
         self.assertEqual(response.status_code, 200)
 
-    # def test_login_user(self):
-    #     self.weconnect_test.post('/api/v1/auth/register', content_type='application/json',
-    #                              data=json.dumps(dict(first_name='Harry', last_name='Potter',
-    #                                                   email='harry@aol.com', password='dumbledore')))
-    #     response = self.weconnect_test.post('/api/v1/auth/login', content_type='application/json',
-    #                                        data=json.dumps(dict(email='harry@aol.com', password='dumbledore')))
-    #     self.assertEqual(response.status_code, 200)
+    def test_login_user(self):
+        self.weconnect_test.post('/api/v1/auth/register', content_type='application/json',
+                                 data=json.dumps(dict(first_name='Harry', last_name='Potter',
+                                                      email='harry@aol.com', password='dumbledore')))
+        response = self.weconnect_test.post('/api/v1/auth/login', content_type='application/json',
+                                           data=json.dumps(dict(email='harry@aol.com', password='dumbledore')))
+        self.assertEqual(response.status_code, 200)
 
     # def test_reset_password(self):
     #     self.weconnect_test.post('/api/v1/auth/register', content_type='application/json',
