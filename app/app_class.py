@@ -1,3 +1,4 @@
+import bcrypt
 """This contains the WeConnect, User, and Business classes.
 The WeConnect class acts as the main class, handling
 the interactions of the user with the application by
@@ -41,40 +42,51 @@ class WeConnect():
 
             if email is not None and password is not None:
                 user = User(user_id, first_name, last_name, email, password)
+                user_password = user.set_password(password)
                 new_user = {
                     'id': user.user_id,
                     'first_name': user.first_name,
                     'last_name': user.last_name,
                     'email': user.email,
-                    'password': user.password
+                    'password': user_password
                 }
                 self.userdb.append(new_user)
-                return new_user
+                return True
 
     def login_user(self, email, password):
         """Logs in users to the application.
         - email: Holds the user's entered e-mail address.
-        - password: Holds the user's entered password"""
+        - password: Holds the user's entered password
+        - user_record: a 'record' of the user stored in dict format
+        - self.userdb: a list of dictionaries, each symbolized by user_record"""
         for user_record in self.userdb:
-            if user_record['email'] == email and user_record['password'] == password:
-                user = {
-                    'user_id': user_record['id'],
-                    'user_email': user_record['email']
-                }
-                return user
-        return False
+            user_id = user_record['id']
+            user_password = user_record['password']
+            user_email = user_record['email']
+            first_name = user_record['first_name']
+            last_name = user_record['last_name']
+            user = User(user_id, first_name, last_name, user_email, user_password)
+            if user.user_id:
+                if user.email == email:
+                    if user.check_password(password, user_password):
+                        return True
 
     def reset_password(self, email, password, new_password):
         """Changes the user's password
         - email: Holds the user's entered e-mail address.
         - password: Holds the user's entered password."""
         for user_record in self.userdb:
-            if user_record['email'] == email and user_record['password'] == password:
-                old_password = user_record['password']
+            salt = bcrypt.gensalt(16)
+            entered_password = bcrypt.hashpw(password, salt)
+            user_password = user_record['password']
+            user_email = user_record['email']
+            if user_email == email and user_password == entered_password:
+                old_password = user_password
 
                 if old_password:
-                    user_record['password'] = new_password
-                    return user_record['password']
+                    salt = bcrypt.gensalt(16)
+                    user_password = bcrypt.hashpw(new_password, salt)
+                    return user_password
         return False
 
     def create_business(self, business_id, name, location, category, description):
@@ -196,6 +208,15 @@ class User():
         self.last_name = last_name
         self.email = email
         self.password = password
+
+    def set_password(self, password):
+        salt = bcrypt.gensalt(16)
+        password = self.password
+        hashed_password = bcrypt.hashpw(password.encode('utf8'), salt)
+        return hashed_password.decode('utf8')
+
+    def check_password(self, password, hashed_password):
+        return bcrypt.checkpw(password.encode('utf8'), hashed_password.encode('utf8'))
 
 class Business():
     """Basic blueprint of the Business class.

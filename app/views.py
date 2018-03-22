@@ -2,7 +2,11 @@ import os
 import random
 from app import app
 from flask import abort, Flask, jsonify, make_response, request
+from flask_jwt_extended import (JWTManager, jwt_required, create_access_token, get_jwt_identity)
 from .app_class import WeConnect
+
+app.config['JWT_SECRET_KEY'] = os.urandom(23)
+jwt = JWTManager(app)
 
 weconnect = WeConnect()
 
@@ -15,6 +19,8 @@ def register_user():
     first_name = data['first_name']
     last_name = data['email']
     password = data['password']
+    if email is None:
+        abort(400)
     new_user = weconnect.register_user(random.randint(1, 500),
                                       first_name, last_name, email, password)
     if new_user:
@@ -29,9 +35,10 @@ def login_user():
     password = data['password']
     user = weconnect.login_user(email, password)
     if user:
-        #Generate a token
-        return jsonify({'message': 'Successfully logged in'}), 200
-
+        access_token = create_access_token(identity=user)
+        return jsonify(access_token=access_token)
+    else:
+        abort(404)
 
 @app.route('/api/auth/logout', methods=['POST'])
 def logout():
@@ -39,6 +46,7 @@ def logout():
 
 
 @app.route('/api/v1/auth/reset-password', methods=['POST'])
+@jwt_required
 def reset_password():
     if not request.json or 'email' not in request.json:
         abort(400)
@@ -51,6 +59,7 @@ def reset_password():
         return jsonify({'message': 'Successfully updated password'}), 200
 
 @app.route('/api/v1/businesses', methods=['GET'])
+@jwt_required
 def get_businesses():
     """Returns all businesses"""
     businesses = weconnect.get_businesses()
@@ -58,6 +67,7 @@ def get_businesses():
 
 
 @app.route('/api/v1/businesses/<businessId>', methods=['GET'])
+@jwt_required
 def get_business(businessId):
     """Returns a specific business"""
     business = weconnect.get_business(int(businessId))
@@ -67,14 +77,16 @@ def get_business(businessId):
 
 
 @app.route('/api/v1/businesses', methods=['POST'])
+@jwt_required
 def register_business():
     """Registers a business"""
     if not request.json or 'name' not in request.json:
         abort(400)
-    name = request.json['name']
-    location = request.json['location']
-    description = request.json['description']
-    category = request.json['category']
+    data = request.get_json()
+    name = data['names']
+    location = data['location']
+    description = data['description']
+    category = data['category']
     emptyString = ""
     if name is not None or description is not None or location is not None or category is not None:
         if name != emptyString or description != emptyString or location != emptyString or category != emptyString:
@@ -85,6 +97,7 @@ def register_business():
     return abort(400)
 
 @app.route('/api/v1/businesses/<businessId>', methods=['PUT'])
+@jwt_required
 def update_business(businessId):
     """Updates a business"""
     if int(businessId) == 0:
@@ -104,10 +117,11 @@ def update_business(businessId):
         (request.json['category']), str) == False:
         abort(400)
 
-    name = request.json['name']
-    description = request.json['description']
-    location = request.json['location']
-    category = request.json['category']
+    data = request.get_json()
+    name = data['names']
+    location = data['location']
+    description = data['description']
+    category = data['category']
 
     if name is not None or description is not None or location is not None or category is not None:
         business = weconnect.update_business(
@@ -115,25 +129,26 @@ def update_business(businessId):
         return jsonify(business)
 
 @app.route('/api/v1/businesses/<businessId>', methods=['DELETE'])
+@jwt_required
 def delete_business(businessId):
     """Deletes a business"""
     print(businessId)
     if int(businessId) == 0:
         abort(404)
 
-# if not request.json:
-# abort(400)
     delete_business = weconnect.delete_business(int(businessId))
     if delete_business:
         return jsonify({'message': 'Business deleted'})
 
 
 @app.route('/api/v1/businesses/<businessId>/reviews', methods=['POST'])
+@jwt_required
 def set_review(businessId):
     """Adds a review to a business"""
     if not request.json or 'review' not in request.json:
         abort(400)
-    review = request.json['review']
+    data = request.get_json()
+    review = data['review']
     business_id = int(businessId)
     new_review = weconnect.add_review(business_id, random.randint(1, 500),
                                       review)
@@ -143,6 +158,7 @@ def set_review(businessId):
 
 
 @app.route('/api/v1/businesses/<businessId>/reviews', methods=['GET'])
+@jwt_required
 def get_reviews(businessId):
     """Returns reviews for the specified business"""
     reviews = weconnect.get_reviews(int(businessId))
