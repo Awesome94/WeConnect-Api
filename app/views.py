@@ -12,13 +12,13 @@ weconnect = WeConnect()
 
 @app.route('/api/v1/auth/register', methods=['POST'])
 def register_user():
-    if not request.json or 'email' not in request.json:
-        abort(400)
     data = request.get_json()
     email = data['email']
     first_name = data['first_name']
     last_name = data['email']
     password = data['password']
+    if not data or not email:
+        abort(400)
     if email is None:
         abort(400)
     new_user = weconnect.register_user(random.randint(1, 500),
@@ -28,11 +28,11 @@ def register_user():
 
 @app.route('/api/v1/auth/login', methods=['POST'])
 def login_user():
-    if not request.json or 'email' not in request.json:
-        abort(400)
     data = request.get_json()
     email = data['email']
     password = data['password']
+    if not data or not email:
+        abort(400)
     user = weconnect.login_user(email, password)
     if user:
         access_token = create_access_token(identity=user)
@@ -48,12 +48,12 @@ def logout():
 @app.route('/api/v1/auth/reset-password', methods=['POST'])
 @jwt_required
 def reset_password():
-    if not request.json or 'email' not in request.json:
-        abort(400)
     data = request.get_json()
     email = data['email']
     password = data['password']
     new_password = data['new_password']
+    if not data or not email or not password or not new_password:
+        return jsonify({'message': 'Supply your password and/or a new password'}), 401
     user = weconnect.reset_password(email, password, new_password)
     if user:
         return jsonify({'message': 'Successfully updated password'}), 200
@@ -118,7 +118,7 @@ def update_business(businessId):
         abort(400)
 
     data = request.get_json()
-    name = data['names']
+    name = data['name']
     location = data['location']
     description = data['description']
     category = data['category']
