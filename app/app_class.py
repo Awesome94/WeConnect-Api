@@ -76,18 +76,20 @@ class WeConnect():
         - email: Holds the user's entered e-mail address.
         - password: Holds the user's entered password."""
         for user_record in self.userdb:
-            salt = bcrypt.gensalt(16)
-            entered_password = bcrypt.hashpw(password, salt)
             user_password = user_record['password']
             user_email = user_record['email']
-            if user_email == email and user_password == entered_password:
-                old_password = user_password
-
-                if old_password:
-                    salt = bcrypt.gensalt(16)
-                    user_password = bcrypt.hashpw(new_password, salt)
-                    return user_password
-        return False
+            user_id = user_record['id']
+            first_name = user_record['first_name']
+            last_name = user_record['last_name']
+            user = User(user_id, first_name, last_name, user_email, user_password)
+            if user.user_id:
+                if user.email == email:
+                    if user.check_password(password, user_password):
+                        old_password = user_password
+                        if old_password:
+                            user_password = user.set_password(new_password)
+                            return True
+            return False
 
     def create_business(self, business_id, name, location, category, description):
         """Creates a business for the user"""
