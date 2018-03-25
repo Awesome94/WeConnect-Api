@@ -14,19 +14,7 @@ class WeConnect():
         - userdb: User database.
         - business: Businesses' database"""
 
-        self.userdb = [{
-            'id': '4',
-            'first_name': 'Joy',
-            'last_name': 'Chips',
-            'email': 'joychips@aol.com',
-            'password': 'someonehere'
-        }, {
-            'id': '3',
-            'first_name': 'Mungai',
-            'last_name': 'Otieno',
-            'email': 'omungai@hotmail.com',
-            'password': 'notimetolose'
-        }]
+        self.userdb = []
 
         self.business = []
 
@@ -35,61 +23,123 @@ class WeConnect():
         - user_id: uniquely identifies the user record
         - first_name: Holds the user's first name
         - last_name: Holds the user's last name
-        - password: Holds the user's password"""
+        - password: Holds the user's password
+        - user_record: a dictionary storing the user details
+        in the following format:
+        {
+            'id': randint,
+            'first_name': 'string',
+            'last_name': 'string',
+            'email': 'string',
+            'password': 'hashed password converted to string format'
+        }
+        Is stored in the self.userdb list
+        - self.userdb: a list of dictionaries, each symbolized by user_record"""
         for user_record in self.userdb:
+            # check if the email submitted is already in the dictionary
+            # and there is an id in the dictionary. If so do not proceed
             if user_record['email'] == email and user_record['id'] is not None:
                 return "You're already registered. Try signing in."
 
-            if email is not None and password is not None:
-                user = User(user_id, first_name, last_name, email, password)
-                user_password = user.set_password(password)
-                new_user = {
-                    'id': user.user_id,
-                    'first_name': user.first_name,
-                    'last_name': user.last_name,
-                    'email': user.email,
-                    'password': user_password
-                }
-                self.userdb.append(new_user)
-                return True
+        if email is not None and password is not None:
+            # make instance of User class with required parameters
+            user = User(user_id, first_name, last_name, email, password)
+            # Hash the user password
+            user_password = user.set_password(password)
+            # create dictionary record of user details
+            new_user = {
+                'id': user.user_id,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email,
+                'password': user_password
+            }
+            # add dictionary to self.userdb list
+            self.userdb.append(new_user)
+            return True
 
     def login_user(self, email, password):
         """Logs in users to the application.
         - email: Holds the user's entered e-mail address.
         - password: Holds the user's entered password
-        - user_record: a 'record' of the user stored in dict format
+        - user_record: a dictionary storing the user details
+        in the following format:
+        {
+            'id': randint,
+            'first_name': 'string',
+            'last_name': 'string',
+            'email': 'string',
+            'password': 'hashed password converted to string format'
+        }
+        Is stored in the self.userdb list
         - self.userdb: a list of dictionaries, each symbolized by user_record"""
         for user_record in self.userdb:
+            # assign dictionary values for ease of reference
             user_id = user_record['id']
             user_password = user_record['password']
             user_email = user_record['email']
             first_name = user_record['first_name']
             last_name = user_record['last_name']
+            # make instance of User class with required parameters
             user = User(user_id, first_name, last_name, user_email, user_password)
+            # check that there is an id value in the dictionary
             if user.user_id:
-                if user.email == email:
+                # check that the email in the dictionary is the same as that entered
+                # by the user
+                if user.check_email(user_email, email):
+                    # check that the password in the dictionary is the same as that entered
+                    # by the user
                     if user.check_password(password, user_password):
                         return True
 
     def reset_password(self, email, password, new_password):
         """Changes the user's password
         - email: Holds the user's entered e-mail address.
-        - password: Holds the user's entered password."""
+        - password: Holds the user's entered password.
+        - user_record: a dictionary storing the user details
+        in the following format:
+        {
+            'id': randint,
+            'first_name': 'string',
+            'last_name': 'string',
+            'email': 'string',
+            'password': 'hashed password converted to string format'
+        }
+        Is stored in the self.userdb list
+        - self.userdb: a list of dictionaries, each symbolized by user_record"""
         for user_record in self.userdb:
+            # assign dictionary values for ease of reference
             user_password = user_record['password']
             user_email = user_record['email']
             user_id = user_record['id']
             first_name = user_record['first_name']
             last_name = user_record['last_name']
+            # make instance of User class with required parameters
             user = User(user_id, first_name, last_name, user_email, user_password)
-            if user.user_id:
-                if user.email == email:
+            # check that there is an id for the user
+            if user_id:
+                # check that the email passed to reset_password is the same as that
+                # in the dictionary
+                if user.check_email(user_email, email):
+                    # check that the password passed to reset_password
+                    # is the same as that in the dictionary
                     if user.check_password(password, user_password):
-                        old_password = user_password
-                        if old_password:
-                            user_password = user.set_password(new_password)
-                            return True
-            return False
+                        # call the change_password method from the User class to switch the the string password
+                        # passed to reset_password with that stored in new_password
+                        password = user.change_password(password, new_password)
+                        # check the present state of the user record
+                        print(user_record)
+                        # update the value of the password in the dictionary
+                        user_record['password'] = user.set_password(new_password)
+                        user_password = user_record['password']
+                        # check if the password matches the hashed password
+                        # in the dictionary
+                        print(user.check_password(password, user_record['password']))
+                        print(password)
+                        print(user_password)
+                        print(user_record['password'])
+                        # check if the user_record has been updated
+                        print(user_record)
 
     def create_business(self, business_id, name, location, category, description):
         """Creates a business for the user"""
@@ -205,6 +255,11 @@ class User():
     with the application."""
 
     def __init__(self, user_id, first_name, last_name, email, password):
+        """Required parameters for the User class
+        - user_id: Holds the user id
+        - first_name: Holds the user's first name
+        - last_name: Holds the user's last name
+        - password: Holds the user's password"""
         self.user_id = user_id
         self.first_name = first_name
         self.last_name = last_name
@@ -212,13 +267,42 @@ class User():
         self.password = password
 
     def set_password(self, password):
+        """Sets the user's password. Handles password hashing
+        as well.
+        - password: Holds the user's password"""
         salt = bcrypt.gensalt(16)
         password = self.password
         hashed_password = bcrypt.hashpw(password.encode('utf8'), salt)
         return hashed_password.decode('utf8')
 
     def check_password(self, password, hashed_password):
+        """Checks that the password entered is the same
+        as the hashed password we have
+        - password: Holds the entered password
+        - hashed_password: Holds the (stored) hashed password."""
         return bcrypt.checkpw(password.encode('utf8'), hashed_password.encode('utf8'))
+
+    def check_email(self, email, user_email):
+        """Checks that the email entered is the same
+        as the email we have
+        - email: Holds the entered password
+        - user_email: Holds the (stored) email."""
+        email = self.email
+        if email == user_email:
+            return True
+        return False
+
+    def change_password(self, password, fresh_password):
+        """Changes the password of the user.
+        - password: Holds the (old entered) password
+        of the user
+        - fresh_password: Holds the (new entered) password
+        of the user"""
+        password = self.password
+        if password != fresh_password:
+            password = fresh_password
+            return password
+        return False
 
 class Business():
     """Basic blueprint of the Business class.
