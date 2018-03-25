@@ -57,6 +57,8 @@ def reset_password():
     user = weconnect.reset_password(email, password, new_password)
     if user:
         return jsonify({'message': 'Successfully updated password'}), 200
+    else:
+        return jsonify({'message': 'Supply your password and/or a new password'}), 401
 
 @app.route('/api/v1/businesses', methods=['GET'])
 @jwt_required
