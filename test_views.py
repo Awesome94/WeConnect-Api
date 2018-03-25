@@ -29,13 +29,16 @@ class WeConnectViews(unittest.TestCase):
         self.weconnect_test.post('/api/v1/auth/register', content_type='application/json',
                                  data=json.dumps(dict(first_name='Harry', last_name='Potter',
                                                       email='harry@aol.com', password='dumbledore')))
+        self.weconnect_test.post('/api/v1/auth/login', content_type='application/json',
+                                           data=json.dumps(dict(email='harry@aol.com', password='dumbledore')))
         login = self.weconnect_test.post('/api/v1/auth/login', content_type='application/json',
                                            data=json.dumps(dict(email='harry@aol.com', password='dumbledore')))
         resp = json.loads(login.data.decode())
+        access_token = resp['access_token']
         response = self.weconnect_test.post('/api/v1/auth/reset-password', content_type='application/json',
                                            data=json.dumps(dict(email='harry@aol.com', password='dumbledore',
                                                                new_password='severus snape')),
-                                            headers=dict(access_token=resp['access_token']))
+                                           headers={'Authorization': 'Bearer %s' % access_token})
         self.assertEqual(response.status_code, 200)
 
     # def test_register_business(self):
