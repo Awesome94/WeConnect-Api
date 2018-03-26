@@ -29,8 +29,6 @@ class WeConnectViews(unittest.TestCase):
         self.weconnect_test.post('/api/v1/auth/register', content_type='application/json',
                                  data=json.dumps(dict(first_name='Harry', last_name='Potter',
                                                       email='harry@aol.com', password='dumbledore')))
-        self.weconnect_test.post('/api/v1/auth/login', content_type='application/json',
-                                           data=json.dumps(dict(email='harry@aol.com', password='dumbledore')))
         login = self.weconnect_test.post('/api/v1/auth/login', content_type='application/json',
                                            data=json.dumps(dict(email='harry@aol.com', password='dumbledore')))
         resp = json.loads(login.data.decode())
