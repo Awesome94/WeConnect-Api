@@ -86,7 +86,7 @@ class WeConnect():
             if user.user_id:
                 # check that the email in the dictionary is the same as that entered
                 # by the user
-                if user.check_email(user_email, email):
+                if user.check_email(email):
                     # check that the password in the dictionary is the same as that entered
                     # by the user
                     if user.check_password(password, user_password):
@@ -120,26 +120,21 @@ class WeConnect():
             if user_id:
                 # check that the email passed to reset_password is the same as that
                 # in the dictionary
-                if user.check_email(user_email, email):
+                if user.check_email(email):
                     # check that the password passed to reset_password
                     # is the same as that in the dictionary
                     if user.check_password(password, user_password):
                         # call the change_password method from the User class to switch the the string password
                         # passed to reset_password with that stored in new_password
-                        password = user.change_password(password, new_password)
-                        # check the present state of the user record
-                        print(user_record)
+                        password = user.change_password(new_password)
                         # update the value of the password in the dictionary
-                        user_record['password'] = user.set_password(new_password)
-                        user_password = user_record['password']
+                        user_password = user.set_password(password)
+                        user_record['password'] = user_password
                         # check if the password matches the hashed password
                         # in the dictionary
-                        print(user.check_password(password, user_record['password']))
-                        print(password)
-                        print(user_password)
-                        print(user_record['password'])
-                        # check if the user_record has been updated
-                        print(user_record)
+                        if user.check_password(password, user_record['password']):
+                            return True
+                        return False
 
     def create_business(self, business_id, name, location, category, description):
         """Creates a business for the user"""
@@ -282,26 +277,24 @@ class User():
         - hashed_password: Holds the (stored) hashed password."""
         return bcrypt.checkpw(password.encode('utf8'), hashed_password.encode('utf8'))
 
-    def check_email(self, email, user_email):
+    def check_email(self, email):
         """Checks that the email entered is the same
         as the email we have
         - email: Holds the entered password
         - user_email: Holds the (stored) email."""
-        email = self.email
-        if email == user_email:
+        if email == self.email:
             return True
         return False
 
-    def change_password(self, password, fresh_password):
+    def change_password(self, fresh_password):
         """Changes the password of the user.
         - password: Holds the (old entered) password
         of the user
         - fresh_password: Holds the (new entered) password
         of the user"""
-        password = self.password
-        if password != fresh_password:
-            password = fresh_password
-            return password
+        if self.password != fresh_password:
+            self.password = fresh_password
+            return self.password
         return False
 
 class Business():
