@@ -15,7 +15,7 @@ def register_user():
     data = request.get_json()
     email = data['email']
     first_name = data['first_name']
-    last_name = data['email']
+    last_name = data['last_name']
     password = data['password']
     if not data or not email:
         abort(400)
