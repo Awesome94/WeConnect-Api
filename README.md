@@ -11,7 +11,7 @@ POST /api/v1/auth/login | Logs in a user
 POST /api/v1/auth/logout | Logs out a user
 POST /api/v1/auth/reset-password | Password reset
 POST /api/v1/businesses | Register a business
-POST /api/v1/businesses/`<businessId>` | Updates a business profile
+PUT /api/v1/businesses/`<businessId>` | Updates a business profile
 DELETE /api/v1/businesses/`<businessId>` | Remove a business
 GET /api/v1/businesses | Retrieves all businesses
 GET /api/v1/businesses/`<businessId>` | Get a business
