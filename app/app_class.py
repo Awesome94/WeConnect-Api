@@ -90,7 +90,7 @@ class WeConnect():
                     # check that the password in the dictionary is the same as that entered
                     # by the user
                     if user.check_password(password, user_password):
-                        return True
+                        return user_id
 
     def reset_password(self, email, password, new_password):
         """Changes the user's password
@@ -136,21 +136,43 @@ class WeConnect():
                             return True
                         return False
 
-    def create_business(self, business_id, name, location, category, description):
-        """Creates a business for the user"""
+    def create_business(self, user_id, business_id, name, location, category, description):
+        """Creates a business for the user
+        - user_id: ID of the user creating the business.
+        - business_id: ID of the created business.
+        - name: Name of the business.
+        - location: Holds where the business is located.
+        - category: Holds the category which the business falls under.
+        - description: Holds the description of the business.
+        - reviews: Holds reviews associated with the business.
+        - user_business: Dictionary holding details of a given business as follows:
+        {
+            'user_id': integer,
+            'business_id': integer,
+            'name': 'string',
+            'location': 'string',
+            'category': 'string',
+            'description': 'string'
+        }
+        Is stored in the self.business list
+        - self.business: Holds a list of businesses, each in dictionary format."""
+        # make sure that no empty fields are entered as part of the business details
         if name is None or location is None or category is None or description is None:
             return "Missing Field: Please provide Name & Description."
 
+        # make an instance of the business class
         business = Business(business_id, name, location, description, category)
+        # create the user's business
         user_business = {
-            'id': business.business_id,
+            'user_id': user_id,
+            'business_id': business.business_id,
             'name': business.name,
             'location': business.location,
             'description': business.description,
             'category': business.category,
             'reviews': []
         }
-
+        #add the created business as a list entry in self.business
         self.business.append(user_business)
         return user_business
 
