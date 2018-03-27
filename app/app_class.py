@@ -151,8 +151,8 @@ class WeConnect():
             'business_id': integer,
             'name': 'string',
             'location': 'string',
-            'category': 'string',
-            'description': 'string'
+            'description': 'string',
+            'category': 'string'
         }
         Is stored in the self.business list
         - self.business: Holds a list of businesses, each in dictionary format."""
@@ -186,42 +186,53 @@ class WeConnect():
             all_businesses.append(item1)
         return all_businesses
 
-    def update_business(self,
-                        business_id,
-                        name=None,
-                        location=None,
-                        description=None,
-                        category=None):
-        """Updates an existing business with details provided by the user."""
-        if business_id is not None:
-            for my_business in self.business:
-                for key in my_business.keys():
-                    if key == 'id' and my_business[key] == business_id:
-                        old_name = my_business['name']
-                        old_description = my_business['description']
-                        old_location = my_business['location']
-                        old_category = my_business['category']
-                        business = Business(business_id, old_name, old_description,
-                                            old_location, old_category)
-
-                        if old_name is not None:
-                            new_name = business.change_name(name)
-                            my_business['name'] = new_name
-
-                        if old_location is not None:
-                            new_location = business.change_location(location)
-                            my_business['location'] = new_location
-
-                        if old_description is not None:
-                            new_description = business.change_description(
-                                description)
-                            my_business['description'] = new_description
-
-                        if old_category is not None:
-                            new_category = business.change_category(category)
-                            my_business['category'] = new_category
-
-                        return my_business
+    def update_business(self, user_id, business_id, name=None, location=None, description=None, category=None):
+        """Updates an existing business with details provided by the user.
+        - user_id: ID of the user creating the business.
+        - business_id: ID of the created business.
+        - name: Name of the business.
+        - location: Holds where the business is located.
+        - category: Holds the category which the business falls under.
+        - description: Holds the description of the business.
+        - reviews: Holds reviews associated with the business.
+        - user_business: Dictionary holding details of a given business as follows:
+        {
+            'user_id': integer,
+            'business_id': integer,
+            'name': 'string',
+            'location': 'string',
+            'description': 'string',
+            'category': 'string'
+        }
+        Is stored in the self.business list
+        - self.business: Holds a list of businesses, each in dictionary format."""
+        # iterate through list of businesses
+        for my_business in self.business:
+            # check that the user ID given is associated with the business
+            if user_id == my_business['user_id']:
+                # check that the business ID given is associated with the business
+                if business_id == my_business['business_id']:
+                    # make instance of the Business class with the parameters passed
+                    business = Business(business_id, name, location, description, category)
+                    # if we have a value for 'name', change the business name
+                    if name is not None:
+                        new_name = business.change_name(name)
+                        my_business['name'] = new_name
+                    # if we have a value for 'location', change the business location
+                    if location is not None:
+                        new_location = business.change_location(location)
+                        my_business['location'] = new_location
+                    # if we have a value for 'description', change the business description
+                    if description is not None:
+                        new_description = business.change_description(description)
+                        my_business['description'] = new_description
+                    # if we have a value for 'category', change the business category
+                    if category is not None:
+                        new_category = business.change_category(category)
+                        my_business['category'] = new_category
+                    # return the updated business
+                    return my_business
+        return False
 
     def get_business(self, business_id):
         all_businesses = []
