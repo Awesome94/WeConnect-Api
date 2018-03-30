@@ -155,14 +155,12 @@ def set_review(businessId):
         abort(404)
     return jsonify(new_review), 201
 
-
-# @app.route('/api/v1/businesses/<businessId>/reviews', methods=['GET'])
-# @jwt_required
-# def get_reviews(businessId):
-#     """Returns reviews for the specified business"""
-#     reviews = weconnect.get_reviews(int(businessId))
-#     print(reviews)
-#     return jsonify({'business': reviews})
+@app.route('/api/v1/businesses/<businessId>/reviews', methods=['GET'])
+@jwt_required
+def get_reviews(businessId):
+    """Returns reviews for the specified business"""
+    reviews = weconnect.get_reviews(int(businessId))
+    return jsonify({'business': reviews})
 
 @app.errorhandler(404)
 def not_found(error):

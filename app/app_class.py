@@ -267,8 +267,8 @@ class WeConnect():
         """Gets all reviews for a single business and
         shows them to a logged-in user."""
         if business_id is not None:
-            for business in self.business:
-                for business_id in business:
+            for business in self.business_db:
+                if business['business_id'] == business_id:
                     return business['reviews']
 
 
