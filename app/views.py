@@ -119,7 +119,7 @@ def update_business(businessId):
     if category and isinstance(category, str) == False:
         abort(400)
 
-    if name or description or location or category is not None:
+    if name is not None or description is not None or location is not None or category is not None:
         business = weconnect.update_business(user_id, int(businessId), name, location, description, category)
         return jsonify(business), 201
 
