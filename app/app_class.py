@@ -253,9 +253,8 @@ class WeConnect():
     def add_review(self, business_id, review_id, user_review):
         """Adds a review by a user"""
         if business_id is not None:
-            for business in self.business:
-                for key, value in business.items():
-                    if key == 'id' and value == business_id:
+            for business in self.business_db:
+                if business['business_id'] == business_id:
                         review = Review(review_id, user_review)
                         new_review = {
                             'id': review.review_id,
