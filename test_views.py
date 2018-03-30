@@ -1,14 +1,17 @@
 import bcrypt, flask, json, flask_jwt_extended, unittest
 
-from app import app, views
+from app import app, app_class, views
 
 class WeConnectViews(unittest.TestCase):
     """Tests the enpoints contains in views.py"""
     def setUp(self):
         self.weconnect_test = app.test_client(self)
+        app_class.WeConnect.user_db = []
+        app_class.WeConnect.business_db = []
 
     def tearDown(self):
-        self.weconnect_test
+        app_class.WeConnect.user_db = []
+        app_class.WeConnect.business_db = []
 
     def test_register_user(self):
         response = self.weconnect_test.post('/api/v1/auth/register', content_type='application/json',
@@ -73,7 +76,6 @@ class WeConnectViews(unittest.TestCase):
                                            data=json.dumps(dict(name='Mortal Kombat1', location='something_new',
                                                                 category='something_new', description='something_new')),
                                            headers={'Authorization': 'Bearer %s' % access_token})
-
         self.assertIn(b'Mortal Kombat1', response.data)
         self.assertIn(b'something_new', response.data)
         self.assertIn(b'user_id', response.data)
