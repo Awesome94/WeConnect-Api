@@ -101,7 +101,7 @@ class WeConnect():
             'password': 'hashed password converted to string format'
         }
         Is stored in the user_db list
-        - self.user_db: a list of dictionaries, each symbolized by user_record"""
+        - user_db: a list of dictionaries, each symbolized by user_record"""
         for user_record in self.user_db:
             # assign dictionary values for ease of reference
             user_password = user_record['password']
@@ -175,10 +175,10 @@ class WeConnect():
         """Gets all businesses on the application
         for a logged-in user"""
         all_businesses = []
-        for item in self.business:
-            item1 = item.copy()
-            item1.pop('reviews', None)
-            all_businesses.append(item1)
+        for entry in self.business_db:
+            item = entry.copy()
+            item.pop('reviews', None)
+            all_businesses.append(item)
         return all_businesses
 
     def update_business(self, user_id, business_id, name=None, location=None, description=None, category=None):
