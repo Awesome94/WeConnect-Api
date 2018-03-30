@@ -95,32 +95,33 @@ def register_business():
         return jsonify({'business': new_business}), 201
     return jsonify({"response": "Empty value entered"}), 400
 
-# @app.route('/api/v1/businesses/<businessId>', methods=['PUT'])
-# @jwt_required
-# def update_business(businessId):
-#     """Updates a business"""
-#     if int(businessId) == 0:
-#         abort(404)
-#     data = request.get_json()
-#     name = data['name']
-#     location = data['location']
-#     description = data['description']
-#     category = data['category']
-#     if not data:
-#         abort(400)
-#     if name and isinstance(name, str) == False:
-#         abort(400)
-#     if description and isinstance(name, str) == False:
-#         abort(400)
-#     if location and isinstance(location, str) == False:
-#         abort(400)
-#     if category and isinstance(category, str) == False:
-#         abort(400)
+@app.route('/api/v1/businesses/<businessId>', methods=['PUT'])
+@jwt_required
+def update_business(businessId):
+    """Updates a business"""
+    if int(businessId) == 0:
+        abort(404)
+    data = request.get_json()
+    name = data['name']
+    location = data['location']
+    description = data['description']
+    category = data['category']
+    current_user = get_jwt_identity()
+    user_id = current_user
+    if not data:
+        abort(400)
+    if name and isinstance(name, str) == False:
+        abort(400)
+    if description and isinstance(name, str) == False:
+        abort(400)
+    if location and isinstance(location, str) == False:
+        abort(400)
+    if category and isinstance(category, str) == False:
+        abort(400)
 
-    # if name is not None or description is not None or location is not None or category is not None:
-    #     business = weconnect.update_business(
-    #         int(businessId), name, location, description, category)
-    #     return jsonify(business), 201
+    if name is not None or description is not None or location is not None or category is not None:
+        business = weconnect.update_business(user_id, int(businessId), name, location, description, category)
+        return jsonify(business), 201
 
 # @app.route('/api/v1/businesses/<businessId>', methods=['DELETE'])
 # @jwt_required
