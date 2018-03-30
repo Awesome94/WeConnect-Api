@@ -4,19 +4,14 @@ The WeConnect class acts as the main class, handling
 the interactions of the user with the application by
 utilizing the other classes defined here."""
 
-
 class WeConnect():
     """Overall application class.
-    Manages the other classes"""
-
-    def __init__(self):
-        """
-        - userdb: User database.
-        - business: Businesses' database"""
-
-        self.userdb = []
-
-        self.business = []
+    Manages the other classes
+    - user_db: User database
+    - business_db: Businesses' database
+    """
+    user_db = []
+    business_db = []
 
     def register_user(self, user_id, first_name, last_name, email, password):
         """Adds a user to the application
@@ -27,15 +22,15 @@ class WeConnect():
         - user_record: a dictionary storing the user details
         in the following format:
         {
-            'id': randint,
+            'id': integer,
             'first_name': 'string',
             'last_name': 'string',
             'email': 'string',
             'password': 'hashed password converted to string format'
         }
-        Is stored in the self.userdb list
-        - self.userdb: a list of dictionaries, each symbolized by user_record"""
-        for user_record in self.userdb:
+        Is stored in the self.user_db list
+        - self.user_db: a list of dictionaries, each symbolized by user_record"""
+        for user_record in self.user_db:
             # check if the email submitted is already in the dictionary
             # and there is an id in the dictionary. If so do not proceed
             if user_record['email'] == email and user_record['id'] is not None:
@@ -55,7 +50,7 @@ class WeConnect():
                 'password': user_password
             }
             # add dictionary to self.userdb list
-            self.userdb.append(new_user)
+            self.user_db.append(new_user)
             return True
 
     def login_user(self, email, password):
@@ -65,15 +60,15 @@ class WeConnect():
         - user_record: a dictionary storing the user details
         in the following format:
         {
-            'id': randint,
+            'id': integer,
             'first_name': 'string',
             'last_name': 'string',
             'email': 'string',
             'password': 'hashed password converted to string format'
         }
-        Is stored in the self.userdb list
-        - self.userdb: a list of dictionaries, each symbolized by user_record"""
-        for user_record in self.userdb:
+        Is stored in the self.user_db list
+        - self.user_db: a list of dictionaries, each symbolized by user_record"""
+        for user_record in self.user_db:
             # assign dictionary values for ease of reference
             user_id = user_record['id']
             user_password = user_record['password']
@@ -99,15 +94,15 @@ class WeConnect():
         - user_record: a dictionary storing the user details
         in the following format:
         {
-            'id': randint,
+            'id': integer,
             'first_name': 'string',
             'last_name': 'string',
             'email': 'string',
             'password': 'hashed password converted to string format'
         }
-        Is stored in the self.userdb list
-        - self.userdb: a list of dictionaries, each symbolized by user_record"""
-        for user_record in self.userdb:
+        Is stored in the user_db list
+        - self.user_db: a list of dictionaries, each symbolized by user_record"""
+        for user_record in self.user_db:
             # assign dictionary values for ease of reference
             user_password = user_record['password']
             user_email = user_record['email']
@@ -154,8 +149,8 @@ class WeConnect():
             'description': 'string',
             'category': 'string'
         }
-        Is stored in the self.business list
-        - self.business: Holds a list of businesses, each in dictionary format."""
+        Is stored in the business_db list
+        - business_db: Holds a list of businesses, each in dictionary format."""
         # make sure that no empty fields are entered as part of the business details
         if name is None or location is None or category is None or description is None:
             return "Missing Field: Please provide Name & Description."
@@ -173,7 +168,7 @@ class WeConnect():
             'reviews': []
         }
         #add the created business as a list entry in self.business
-        self.business.append(user_business)
+        self.business_db.append(user_business)
         return user_business
 
     def get_businesses(self):
@@ -204,10 +199,10 @@ class WeConnect():
             'description': 'string',
             'category': 'string'
         }
-        Is stored in the self.business list
-        - self.business: Holds a list of businesses, each in dictionary format."""
+        Is stored in the business_db
+        - business_db: Holds a list of businesses, each in dictionary format."""
         # iterate through list of businesses
-        for my_business in self.business:
+        for my_business in self.business_db:
             # check that the user ID given is associated with the business
             if user_id == my_business['user_id']:
                 # check that the business ID given is associated with the business
@@ -215,19 +210,19 @@ class WeConnect():
                     # make instance of the Business class with the parameters passed
                     business = Business(business_id, name, location, description, category)
                     # if we have a value for 'name', change the business name
-                    if name is not None:
+                    if name:
                         new_name = business.change_name(name)
                         my_business['name'] = new_name
                     # if we have a value for 'location', change the business location
-                    if location is not None:
+                    if location:
                         new_location = business.change_location(location)
                         my_business['location'] = new_location
                     # if we have a value for 'description', change the business description
-                    if description is not None:
+                    if description:
                         new_description = business.change_description(description)
                         my_business['description'] = new_description
                     # if we have a value for 'category', change the business category
-                    if category is not None:
+                    if category:
                         new_category = business.change_category(category)
                         my_business['category'] = new_category
                     # return the updated business
