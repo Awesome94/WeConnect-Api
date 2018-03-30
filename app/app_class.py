@@ -240,13 +240,15 @@ class WeConnect():
                 if business['business_id'] == business_id:
                     return business
 
-    def delete_business(self, business_id):
+    def delete_business(self, user_id, business_id):
         """Deletes a business created by the user."""
-        if business_id is not None:
-            for my_business in self.business:
-                if my_business['id'] == business_id:
-                    self.business.remove(my_business)
-                    return True
+        if user_id is not None:
+            if business_id is not None:
+                for my_business in self.business_db:
+                    if my_business['user_id'] == user_id:
+                        if my_business['business_id'] == business_id:
+                            self.business_db.remove(my_business)
+                            return True
 
     def add_review(self, business_id, review_id, user_review):
         """Adds a review by a user"""

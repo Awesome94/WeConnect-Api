@@ -123,17 +123,18 @@ def update_business(businessId):
         business = weconnect.update_business(user_id, int(businessId), name, location, description, category)
         return jsonify(business), 201
 
-# @app.route('/api/v1/businesses/<businessId>', methods=['DELETE'])
-# @jwt_required
-# def delete_business(businessId):
-#     """Deletes a business"""
-#     print(businessId)
-#     if int(businessId) == 0:
-#         abort(404)
+@app.route('/api/v1/businesses/<businessId>', methods=['DELETE'])
+@jwt_required
+def delete_business(businessId):
+    """Deletes a business"""
+    if int(businessId) == 0:
+        abort(404)
 
-#     delete_business = weconnect.delete_business(int(businessId))
-#     if delete_business:
-#         return jsonify({'message': 'Business deleted'})
+    current_user = get_jwt_identity()
+    user_id = current_user
+    delete_business = weconnect.delete_business(user_id, int(businessId))
+    if delete_business:
+        return jsonify({'message': 'Business deleted'})
 
 
 # @app.route('/api/v1/businesses/<businessId>/reviews', methods=['POST'])
