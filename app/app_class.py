@@ -231,15 +231,14 @@ class WeConnect():
 
     def get_business(self, business_id):
         all_businesses = []
-        for item in self.business:
-            item1 = item.copy()
-            item1.pop('reviews', None)
-            all_businesses.append(item1)
+        for entry in self.business_db:
+            item = entry.copy()
+            item.pop('reviews', None)
+            all_businesses.append(item)
 
             for business in all_businesses:
-                for key in business.keys():
-                    if key == 'id' and business[key] == business_id:
-                        return business
+                if business['business_id'] == business_id:
+                    return business
 
     def delete_business(self, business_id):
         """Deletes a business created by the user."""
