@@ -137,20 +137,23 @@ def delete_business(businessId):
         return jsonify({'message': 'Business deleted'})
 
 
-# @app.route('/api/v1/businesses/<businessId>/reviews', methods=['POST'])
-# @jwt_required
-# def set_review(businessId):
-#     """Adds a review to a business"""
-#     if not request.json or 'review' not in request.json:
-#         abort(400)
-#     data = request.get_json()
-#     review = data['review']
-#     business_id = int(businessId)
-#     new_review = weconnect.add_review(business_id, random.randint(1, 500),
-#                                       review)
-#     if new_review is None:
-#         abort(404)
-#     return jsonify(new_review), 201
+@app.route('/api/v1/businesses/<businessId>/reviews', methods=['POST'])
+@jwt_required
+def set_review(businessId):
+    """Adds a review to a business"""
+    if not request.json or 'review' not in request.json:
+        abort(400)
+    data = request.get_json()
+    review = data['review']
+
+    if not data or review:
+        abort(400)
+    business_id = int(businessId)
+    new_review = weconnect.add_review(business_id, random.randint(1, 500),
+                                      review)
+    if new_review is None:
+        abort(404)
+    return jsonify(new_review), 201
 
 
 # @app.route('/api/v1/businesses/<businessId>/reviews', methods=['GET'])
