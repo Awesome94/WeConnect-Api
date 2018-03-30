@@ -149,20 +149,23 @@ class WeConnectViews(unittest.TestCase):
     #     self.assertTrue(response.status_code, 200)
     #     response = self.weconnect_test.delete('/api/v1/businesses/'+str(biz_id))
 
-    # def test_add_review(self):
-    #     resp = self.weconnect_test.post('/api/v1/businesses', content_type='application/json',
-    #                         data=json.dumps(dict(name='Mortal Kombat',
-    #                                         location='Earth', category='something',
-    #                                         description='something',
-    #                                         review=[])))
-    #     biz_id = json.loads(resp.data.decode())['business']['id']
-    #     response = self.weconnect_test.post('/api/v1/businesses/'+str(biz_id)+'/reviews',
-    #                                         content_type='application/json', data=json.dumps(dict(review="Beautiful")))
-    #     self.assertTrue(response.status_code, 200)
-    #     response = self.weconnect_test.get('/api/v1/businesses/'+str(biz_id)+'/reviews')
-    #     self.assertTrue(response.status_code, 200)
-    #     response = self.weconnect_test.delete('/api/v1/businesses/'+str(biz_id))
-
+    def test_add_review(self):
+        self.weconnect_test.post('/api/v1/auth/register', content_type='application/json',
+                                 data=json.dumps(dict(first_name='Harry', last_name='Potter',
+                                                      email='harry@aol.com', password='dumbledore')))
+        login = self.weconnect_test.post('/api/v1/auth/login', content_type='application/json',
+                                           data=json.dumps(dict(email='harry@aol.com', password='dumbledore')))
+        resp = json.loads(login.data.decode())
+        access_token = resp['access_token']
+        business = self.weconnect_test.post('/api/v1/businesses', content_type='application/json',
+                            data=json.dumps(dict(name='Mortal Kombat', location='Earth', category='something',
+                                            description='something', review=[])),
+                                            headers={'Authorization': 'Bearer %s' % access_token})
+        biz_id = json.loads(business.data.decode())['business']['business_id']
+        response = self.weconnect_test.post('/api/v1/businesses/'+str(biz_id)+'/reviews',
+                                            content_type='application/json', data=json.dumps(dict(review="Beautiful")),
+                                            headers={'Authorization': 'Bearer %s' % access_token})
+        self.assertTrue(response.status_code, 200)
 
 if __name__ == '__main__':
     unittest.main()
