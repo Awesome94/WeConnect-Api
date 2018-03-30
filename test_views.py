@@ -81,22 +81,22 @@ class WeConnectViews(unittest.TestCase):
         self.assertIn(b'user_id', response.data)
         self.assertTrue(response.status_code, 201)
 
-    # def test_get_business(self):
-    #     self.weconnect_test.post('/api/v1/auth/register', content_type='application/json',
-    #                              data=json.dumps(dict(first_name='Harry', last_name='Potter',
-    #                                                   email='harry@aol.com', password='dumbledore')))
-    #     login = self.weconnect_test.post('/api/v1/auth/login', content_type='application/json',
-    #                                        data=json.dumps(dict(email='harry@aol.com', password='dumbledore')))
-    #     resp = json.loads(login.data.decode())
-    #     access_token = resp['access_token']
-    #     business = self.weconnect_test.post('/api/v1/businesses', content_type='application/json',
-    #                                     data=json.dumps(dict(name='Mortal Kombat', location='Earth', category='something',
-    #                                                     description='something', review=[])),
-    #                                                     headers={'Authorization': 'Bearer %s' % access_token})
-    #     biz_id = json.loads(business.get_data())['business']['id']
-    #     response = self.weconnect_test.get('/api/v1/businesses/'+str(biz_id), content_type='application/json',
-    #                                        headers={'Authorization': 'Bearer %s' % access_token})
-    #     self.assertEqual(response.status_code, 200)
+    def test_get_business(self):
+        self.weconnect_test.post('/api/v1/auth/register', content_type='application/json',
+                                 data=json.dumps(dict(first_name='Harry', last_name='Potter',
+                                                      email='harry@aol.com', password='dumbledore')))
+        login = self.weconnect_test.post('/api/v1/auth/login', content_type='application/json',
+                                           data=json.dumps(dict(email='harry@aol.com', password='dumbledore')))
+        resp = json.loads(login.data.decode())
+        access_token = resp['access_token']
+        business = self.weconnect_test.post('/api/v1/businesses', content_type='application/json',
+                                        data=json.dumps(dict(name='Mortal Kombat', location='Earth', category='something',
+                                                        description='something', review=[])),
+                                                        headers={'Authorization': 'Bearer %s' % access_token})
+        biz_id = json.loads(business.get_data())['business']['business_id']
+        response = self.weconnect_test.get('/api/v1/businesses/'+str(biz_id), content_type='application/json',
+                                           headers={'Authorization': 'Bearer %s' % access_token})
+        self.assertEqual(response.status_code, 200)
 
     def test_get_businesses(self):
         self.weconnect_test.post('/api/v1/auth/register', content_type='application/json',
