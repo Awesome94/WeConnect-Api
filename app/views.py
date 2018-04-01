@@ -141,8 +141,6 @@ def delete_business(businessId):
 @jwt_required
 def set_review(businessId):
     """Adds a review to a business"""
-    if not request.json or 'review' not in request.json:
-        abort(400)
     data = request.get_json()
     review = data['review']
 
