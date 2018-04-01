@@ -4,6 +4,7 @@ The WeConnect class acts as the main class, handling
 the interactions of the user with the application by
 utilizing the other classes defined here."""
 
+
 class WeConnect():
     """Overall application class.
     Manages the other classes
@@ -76,7 +77,12 @@ class WeConnect():
             first_name = user_record['first_name']
             last_name = user_record['last_name']
             # make instance of User class with required parameters
-            user = User(user_id, first_name, last_name, user_email, user_password)
+            user = User(
+                user_id,
+                first_name,
+                last_name,
+                user_email,
+                user_password)
             # check that there is an id value in the dictionary
             if user.user_id:
                 # check that the email in the dictionary is the same as that entered
@@ -110,7 +116,12 @@ class WeConnect():
             first_name = user_record['first_name']
             last_name = user_record['last_name']
             # make instance of User class with required parameters
-            user = User(user_id, first_name, last_name, user_email, user_password)
+            user = User(
+                user_id,
+                first_name,
+                last_name,
+                user_email,
+                user_password)
             # check that there is an id for the user
             if user_id:
                 # check that the email passed to reset_password is the same as that
@@ -120,18 +131,27 @@ class WeConnect():
                     # is the same as that in the dictionary
                     if user.check_password(password, user_password):
                         # call the change_password method from the User class to switch the the string password
-                        # passed to reset_password with that stored in new_password
+                        # passed to reset_password with that stored in
+                        # new_password
                         password = user.change_password(new_password)
                         # update the value of the password in the dictionary
                         user_password = user.set_password(password)
                         user_record['password'] = user_password
                         # check if the password matches the hashed password
                         # in the dictionary
-                        if user.check_password(password, user_record['password']):
+                        if user.check_password(
+                                password, user_record['password']):
                             return True
                         return False
 
-    def create_business(self, user_id, business_id, name, location, category, description):
+    def create_business(
+            self,
+            user_id,
+            business_id,
+            name,
+            location,
+            category,
+            description):
         """Creates a business for the user
         - user_id: ID of the user creating the business.
         - business_id: ID of the created business.
@@ -151,7 +171,8 @@ class WeConnect():
         }
         Is stored in the business_db list
         - business_db: Holds a list of businesses, each in dictionary format."""
-        # make sure that no empty fields are entered as part of the business details
+        # make sure that no empty fields are entered as part of the business
+        # details
         if name is None or location is None or category is None or description is None:
             return "Missing Field: Please provide Name & Description."
 
@@ -167,7 +188,7 @@ class WeConnect():
             'category': business.category,
             'reviews': []
         }
-        #add the created business as a list entry in self.business
+        # add the created business as a list entry in self.business
         self.business_db.append(user_business)
         return user_business
 
@@ -181,7 +202,14 @@ class WeConnect():
             all_businesses.append(item)
         return all_businesses
 
-    def update_business(self, user_id, business_id, name=None, location=None, description=None, category=None):
+    def update_business(
+            self,
+            user_id,
+            business_id,
+            name=None,
+            location=None,
+            description=None,
+            category=None):
         """Updates an existing business with details provided by the user.
         - user_id: ID of the user creating the business.
         - business_id: ID of the created business.
@@ -205,23 +233,30 @@ class WeConnect():
         for my_business in self.business_db:
             # check that the user ID given is associated with the business
             if user_id == my_business['user_id']:
-                # check that the business ID given is associated with the business
+                # check that the business ID given is associated with the
+                # business
                 if business_id == my_business['business_id']:
-                    # make instance of the Business class with the parameters passed
-                    business = Business(business_id, name, location, description, category)
+                    # make instance of the Business class with the parameters
+                    # passed
+                    business = Business(
+                        business_id, name, location, description, category)
                     # if we have a value for 'name', change the business name
                     if name:
                         new_name = business.change_name(name)
                         my_business['name'] = new_name
-                    # if we have a value for 'location', change the business location
+                    # if we have a value for 'location', change the business
+                    # location
                     if location:
                         new_location = business.change_location(location)
                         my_business['location'] = new_location
-                    # if we have a value for 'description', change the business description
+                    # if we have a value for 'description', change the business
+                    # description
                     if description:
-                        new_description = business.change_description(description)
+                        new_description = business.change_description(
+                            description)
                         my_business['description'] = new_description
-                    # if we have a value for 'category', change the business category
+                    # if we have a value for 'category', change the business
+                    # category
                     if category:
                         new_category = business.change_category(category)
                         my_business['category'] = new_category
@@ -255,13 +290,13 @@ class WeConnect():
         if business_id is not None:
             for business in self.business_db:
                 if business['business_id'] == business_id:
-                        review = Review(review_id, user_review)
-                        new_review = {
-                            'id': review.review_id,
-                            'review': review.review
-                        }
-                        business['reviews'].append(new_review)
-                        return business
+                    review = Review(review_id, user_review)
+                    new_review = {
+                        'id': review.review_id,
+                        'review': review.review
+                    }
+                    business['reviews'].append(new_review)
+                    return business
 
     def get_reviews(self, business_id):
         """Gets all reviews for a single business and
@@ -303,7 +338,9 @@ class User():
         as the hashed password we have
         - password: Holds the entered password
         - hashed_password: Holds the (stored) hashed password."""
-        return bcrypt.checkpw(password.encode('utf8'), hashed_password.encode('utf8'))
+        return bcrypt.checkpw(
+            password.encode('utf8'),
+            hashed_password.encode('utf8'))
 
     def check_email(self, email):
         """Checks that the email entered is the same
@@ -324,6 +361,7 @@ class User():
             self.password = fresh_password
             return self.password
         return False
+
 
 class Business():
     """Basic blueprint of the Business class.
