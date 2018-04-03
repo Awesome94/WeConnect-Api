@@ -1,13 +1,10 @@
 import bcrypt
 """This contains the WeConnect, User, and Business classes.
-The WeConnect class acts as the main class, handling
-the interactions of the user with the application by
-utilizing the other classes defined here."""
-
+WeConnect acts as the main class, handling user interactions
+by using the other classes."""
 
 class WeConnect():
-    """Overall application class.
-    Manages the other classes
+    """
     - user_db: User database
     - business_db: Businesses' database
     """
@@ -21,15 +18,6 @@ class WeConnect():
         - last_name: Holds the user's last name
         - password: Holds the user's password
         - user_record: a dictionary storing the user details
-        in the following format:
-        {
-            'id': integer,
-            'first_name': 'string',
-            'last_name': 'string',
-            'email': 'string',
-            'password': 'hashed password converted to string format'
-        }
-        Is stored in the self.user_db list
         - self.user_db: a list of dictionaries, each symbolized by user_record"""
         for user_record in self.user_db:
             # check if the email submitted is already in the dictionary
@@ -59,15 +47,6 @@ class WeConnect():
         - email: Holds the user's entered e-mail address.
         - password: Holds the user's entered password
         - user_record: a dictionary storing the user details
-        in the following format:
-        {
-            'id': integer,
-            'first_name': 'string',
-            'last_name': 'string',
-            'email': 'string',
-            'password': 'hashed password converted to string format'
-        }
-        Is stored in the self.user_db list
         - self.user_db: a list of dictionaries, each symbolized by user_record"""
         for user_record in self.user_db:
             # assign dictionary values for ease of reference
@@ -98,16 +77,8 @@ class WeConnect():
         - email: Holds the user's entered e-mail address.
         - password: Holds the user's entered password.
         - user_record: a dictionary storing the user details
-        in the following format:
-        {
-            'id': integer,
-            'first_name': 'string',
-            'last_name': 'string',
-            'email': 'string',
-            'password': 'hashed password converted to string format'
-        }
-        Is stored in the user_db list
-        - user_db: a list of dictionaries, each symbolized by user_record"""
+          in the user_db list
+        - self.user_db: a list of dictionaries, each symbolized by user_record"""
         for user_record in self.user_db:
             # assign dictionary values for ease of reference
             user_password = user_record['password']
@@ -160,16 +131,7 @@ class WeConnect():
         - category: Holds the category which the business falls under.
         - description: Holds the description of the business.
         - reviews: Holds reviews associated with the business.
-        - user_business: Dictionary holding details of a given business as follows:
-        {
-            'user_id': integer,
-            'business_id': integer,
-            'name': 'string',
-            'location': 'string',
-            'description': 'string',
-            'category': 'string'
-        }
-        Is stored in the business_db list
+        - user_business: Dictionary holding details of a given business
         - business_db: Holds a list of businesses, each in dictionary format."""
         # make sure that no empty fields are entered as part of the business
         # details
@@ -218,16 +180,7 @@ class WeConnect():
         - category: Holds the category which the business falls under.
         - description: Holds the description of the business.
         - reviews: Holds reviews associated with the business.
-        - user_business: Dictionary holding details of a given business as follows:
-        {
-            'user_id': integer,
-            'business_id': integer,
-            'name': 'string',
-            'location': 'string',
-            'description': 'string',
-            'category': 'string'
-        }
-        Is stored in the business_db
+        - user_business: Dictionary holding details of a given business
         - business_db: Holds a list of businesses, each in dictionary format."""
         # iterate through list of businesses
         for my_business in self.business_db:
