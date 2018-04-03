@@ -1,18 +1,28 @@
 import os
 import random
+import json
+from flask import Flask, abort, jsonify, make_response, request
+from flask_jwt_extended import (JWTManager, create_access_token,
+                                get_jwt_identity, get_raw_jwt,
+                                jwt_required)
+
 from app import app
-from flask import abort, Flask, jsonify, make_response, request
-from flask_jwt_extended import (
-    JWTManager,
-    jwt_required,
-    create_access_token,
-    get_jwt_identity)
+
 from .app_class import WeConnect
 
 app.config['JWT_SECRET_KEY'] = os.urandom(23)
+app.config['JWT_BLACKLIST_ENABLED'] = True
+app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access']
 jwt = JWTManager(app)
 
+blacklist = set()
 weconnect = WeConnect()
+
+
+@jwt.token_in_blacklist_loader
+def check_if_token_in_blacklist(decrypted_token):
+    jti = decrypted_token['jti']
+    return jti in blacklist
 
 
 @app.route('/api/v1/auth/register', methods=['POST'])
@@ -47,9 +57,12 @@ def login_user():
         abort(404)
 
 
-@app.route('/api/auth/logout', methods=['POST'])
+@app.route('/api/v1/auth/logout', methods=['POST'])
+@jwt_required
 def logout():
-    pass
+    jti = get_raw_jwt()['jti']
+    blacklist.add(jti)
+    return jsonify({"msg": "Successfully logged out"}), 200
 
 
 @app.route('/api/v1/auth/reset-password', methods=['POST'])

@@ -6,5 +6,5 @@ install:
   - pip install -r requirements.txt
 script:
   # Command to run tests
-  - pytest test_views.py
+  - python manage.py test
 
