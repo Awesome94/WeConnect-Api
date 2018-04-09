@@ -232,7 +232,7 @@ class WeConnect():
                     review = Review(review_id, user_review)
                     # create review
                     new_review = {
-                        'id': review.review_id,
+                        'review_id': review.review_id,
                         'review': review.review
                     }
                     # add review to list of reviews

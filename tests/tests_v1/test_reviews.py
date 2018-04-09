@@ -59,6 +59,7 @@ class WeConnectViews(unittest.TestCase):
                     review="Beautiful")),
             headers={
                 'Authorization': 'Bearer %s' % access_token})
+        self.assertIn(b'review_id', review.data)
         self.assertTrue(review.status_code, 200)
 
     def test_get_reviews(self):

@@ -49,9 +49,7 @@ class WeConnectViews(unittest.TestCase):
                     review=[])),
             headers={
                 'Authorization': 'Bearer %s' % access_token})
-        self.assertIn(b'Mortal Kombat', response.data)
-        self.assertIn(b'Earth', response.data)
-        self.assertIn(b'something', response.data)
+        self.assertIn(b'business_id', response.data)
         self.assertIn(b'user_id', response.data)
         self.assertEqual(response.status_code, 201)
 
@@ -100,6 +98,7 @@ class WeConnectViews(unittest.TestCase):
                 'Authorization': 'Bearer %s' % access_token})
         self.assertIn(b'Mortal Kombat1', response.data)
         self.assertIn(b'something_new', response.data)
+        self.assertIn(b'business_id', response.data)
         self.assertIn(b'user_id', response.data)
         self.assertTrue(response.status_code, 201)
 
