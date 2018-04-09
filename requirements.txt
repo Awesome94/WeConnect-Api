@@ -15,7 +15,7 @@ MarkupSafe==1.0
 mccabe==0.6.1
 pycodestyle==2.3.1
 pycparser==2.18
-pytz==2.3.1
+pytz==2018.3
 PyJWT==1.5.3
 six==1.11.0
 Werkzeug==0.14.1
