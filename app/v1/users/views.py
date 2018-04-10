@@ -53,8 +53,9 @@ def login_user():
     user = weconnect.login_user(email, password)
     if user:
         access_token = create_access_token(identity=user)
-        if access_token not in blacklist:
-            return jsonify(access_token=access_token), 200
+        if access_token in blacklist:
+            return jsonify({'message': 'Invalid token'})
+        return jsonify(access_token=access_token), 200
     else:
         abort(404)
 
