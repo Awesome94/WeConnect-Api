@@ -20,4 +20,28 @@ GET /api/v1/businesses/`<businessId>` | Get a business
 POST /api/v1/businesses/`<businessId>`/reviews | Add a review for a business
 GET /api/v1/businesses/`<businessId>`/reviews | Get all reviews for a business
 
+## Running the API
+1. Clone the repo as follows:
+`git clone https://github.com/leni1/WeConnect-Api.git`
+
+2. Install `virtualenv` if you don't already have it on your system.
+`pip install virtualenv`
+
+3. Change directory to where the API code is located:
+`cd WeConnect-Api` or equivalent on your operating system.
+
+4. Create a folder for the API's virtual environment:
+`virtualenv your-folder-name`
+
+5. Activate the virtual environment:
+`source your-folder-name/bin/activate`
+
+6. Install the API's dependencies:
+`pip install -r requirements.txt`
+
+7. Run the API:
+`python app.py`
+
+#### Note
+This API uses Python 3. It has not been checked for compatibility with Python 2. As such, your mileage may vary.
 
