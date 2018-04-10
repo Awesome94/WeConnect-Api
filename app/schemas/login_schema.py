@@ -7,12 +7,12 @@ login_schema = {
     "properties": {
         "email": {
             "type": "string",
-            "description": "The category of the business",
+            "description": "User's e-mail address",
             "maxLength": 255
         },
         "password": {
             "type": "string",
-            "description": "The description of the business",
+            "description": "User's password",
             "maxLength": 255
         }
     },

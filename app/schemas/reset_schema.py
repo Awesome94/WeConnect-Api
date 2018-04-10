@@ -5,24 +5,19 @@ reset_schema = {
                     in the WeConnect app.",
     "type": "object",
     "properties": {
-        "user_id": {
-            "type": "string",
-            "description": "The unique id of user.",
-            "maxLength": 255
-        },
         "email": {
             "type": "string",
-            "description": "The category of the business",
+            "description": "User's e-mail address",
             "maxLength": 255
         },
         "password": {
             "type": "string",
-            "description": "The description of the business",
+            "description": "User's password",
             "maxLength": 255
         },
         "new_password": {
             "type": "string",
-            "description": "The location of the business",
+            "description": "User's new password",
             "maxLength": 255
         },
     },
