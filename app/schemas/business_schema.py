@@ -18,29 +18,22 @@ business_schema = {
         "name": {
             "type": "string",
             "description": "The name of the business",
-            "minLength": 3,
             "maxLength": 255
         },
         "location": {
             "type": "string",
             "description": "The location of the business",
-            "minLength": 3,
-            "maxLength": 255,
-            "pattern": "^[A-Za-z\\s]*$"
+            "maxLength": 255
         },
         "category": {
             "type": "string",
             "description": "The category of the business",
-            "minLength": 3,
-            "maxLength": 255,
-            "pattern": "^[A-Za-z\\s]*$"
+            "maxLength": 255
         },
         "description": {
             "type": "string",
             "description": "The description of the business",
-            "minLength": 3,
-            "maxLength": 255,
-            "pattern": "^[A-Za-z\\s]*$"
+            "maxLength": 255
         },
         "review": {
             "type": "array"

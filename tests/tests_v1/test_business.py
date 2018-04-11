@@ -91,13 +91,13 @@ class WeConnectViews(unittest.TestCase):
             data=json.dumps(
                 dict(
                     name='Mortal Kombat1',
-                    location='something new',
-                    category='something new',
-                    description='something new')),
+                    location='something_new',
+                    category='something_new',
+                    description='something_new')),
             headers={
                 'Authorization': 'Bearer %s' % access_token})
         self.assertIn(b'Mortal Kombat1', response.data)
-        self.assertIn(b'something new', response.data)
+        self.assertIn(b'something_new', response.data)
         self.assertIn(b'business_id', response.data)
         self.assertIn(b'user_id', response.data)
         self.assertTrue(response.status_code, 201)
