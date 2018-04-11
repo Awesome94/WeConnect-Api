@@ -18,6 +18,7 @@ reset_schema = {
         "new_password": {
             "type": "string",
             "description": "User's new password",
+            "minLength": 7,
             "maxLength": 255
         },
     },
