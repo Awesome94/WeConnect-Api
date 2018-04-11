@@ -16,8 +16,7 @@ review_schema = {
             "maxLength": 255
         },
         "review": {
-            "type": "string",
-            "pattern": "^[A-Za-z\\s]*$"
+            "type": "string"
         }
     },
     "additionalProperties": False,
