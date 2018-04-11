@@ -41,7 +41,7 @@ def register_user():
     new_user = weconnect.register_user(random.randint(1, 500),
                                        first_name, last_name, email, password)
     if new_user:
-        return jsonify({'message': 'Successfully created user'}), 200
+        return jsonify({'message': 'Success'}), 200
 
 
 @app.route('/api/v1/auth/login', methods=['POST'])
