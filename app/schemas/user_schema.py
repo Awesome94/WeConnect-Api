@@ -13,12 +13,16 @@ user_schema = {
         "first_name": {
             "type": "string",
             "description": "User's first name",
-            "maxLength": 255
+            "minLength": 3,
+            "maxLength": 255,
+            "pattern": "^[A-Za-z\\s]*$"
         },
         "last_name": {
             "type": "string",
             "description": "User's last name",
-            "maxLength": 255
+            "minLength": 3,
+            "maxLength": 255,
+            "pattern": "^[A-Za-z\\s]*$"
         },
         "email": {
             "type": "string",
@@ -28,6 +32,7 @@ user_schema = {
         "password": {
             "type": "string",
             "description": "User's password",
+            "minLength": 7,
             "maxLength": 255
         }
     },
