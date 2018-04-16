@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.org/leni1/WeConnect-Api.svg?branch=master)](https://travis-ci.org/leni1/WeConnect-Api/)
 [![Maintainability](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability)](https://codeclimate.com/github/leni1/WeConnect-Api/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/test_coverage)](https://codeclimate.com/github/leni1/WeConnect-Api/test_coverage)
+[![Coverage Status](https://coveralls.io/repos/github/leni1/WeConnect-Api/badge.svg)](https://coveralls.io/github/leni1/WeConnect-Api)
 
 Holds the API for the UI contained within [WeConnect](https://github.com/leni1/WeConnect)
 
