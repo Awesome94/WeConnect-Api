@@ -3,7 +3,7 @@ import json
 import flask_jwt_extended
 import unittest
 
-from app import app
+from app import create_app
 from app.v1 import models, users
 
 class WeConnectViews(unittest.TestCase):
