@@ -5,7 +5,7 @@ from flask import Flask, abort, jsonify, make_response, request
 from flask_jwt_extended import (JWTManager, create_access_token,
                                 get_jwt_identity, get_raw_jwt,
                                 jwt_required)
-from app import app
+from app import create_app
 from app.schemas.business_schema import business_schema
 from app.schemas.review_schema import review_schema
 from app.v1.models import WeConnect
