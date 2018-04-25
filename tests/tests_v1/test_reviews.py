@@ -3,9 +3,9 @@ import json
 import flask_jwt_extended
 import unittest
 
-from app import create_app
-from app.v1 import models, users
-
+from app import app
+from app.v1 import models
+from app.v1.views import businesses, reviews, users
 
 class WeConnectViews(unittest.TestCase):
     """Tests the enpoints contains in views.py"""
@@ -60,7 +60,7 @@ class WeConnectViews(unittest.TestCase):
             headers={
                 'Authorization': 'Bearer %s' % access_token})
         self.assertIn(b'review_id', review.data)
-        self.assertTrue(review.status_code, 200)
+        self.assertTrue(review.status_code, 201)
 
     def test_get_reviews(self):
         self.weconnect_test.post(

@@ -3,8 +3,9 @@ import json
 import flask_jwt_extended
 import unittest
 
-from app import create_app
-from app.v1 import models, users
+from app import app
+from app.v1 import models
+from app.v1.views import users
 
 class WeConnectViews(unittest.TestCase):
     """Tests the enpoints contains in views.py"""
@@ -16,6 +17,7 @@ class WeConnectViews(unittest.TestCase):
 
     def tearDown(self):
         models.WeConnect.user_db = []
+        models.WeConnect.business_db = []
 
     def test_register_user(self):
         response = self.weconnect_test.post(
