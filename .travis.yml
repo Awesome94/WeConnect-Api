@@ -6,7 +6,7 @@ install:
   - pip install -r requirements.txt
 script:
   # Command to run tests
-  - pytest
+  - flask test
 after_success:
   - coveralls
 
